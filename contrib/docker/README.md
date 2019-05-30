@@ -26,7 +26,7 @@ Docker is an easy way to get stated with Superset.
 To initialize the database with a user and example charts, dashboards and datasets run:
 
 ```bash
-SUPERSET_LOAD_EXAMPLES=yes docker-compose run --rm superset ./docker-init.sh
+docker-compose run -e SUPERSET_LOAD_EXAMPLES=yes --rm superset ./docker-init.sh
 ```
 
 This may take a minute.
@@ -39,7 +39,7 @@ To run the container, simply run:
 docker-compose up
 ```
 
-After several minutes for superset initialization to finish, you can open a browser and view [`http://localhost:8088`](http://localhost:8088) 
+After several minutes for superset initialization to finish, you can open a browser and view [`http://localhost:8088`](http://localhost:8088)
 to start your journey.
 
 ## Developing
