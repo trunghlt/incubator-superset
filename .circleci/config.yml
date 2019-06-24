@@ -17,7 +17,7 @@ jobs:
 
       - run:
          name: Build Docker image
-         command: docker build -t $DOCKER_REGISTRY/$PROJECT_ID/$DOCKER_IMAGE_NAME:$CIRCLE_BUILD_NUM -f ~/incubator-superset/contrib/docker/Dockerfile .
+         command: docker build -t $DOCKER_REGISTRY/$PROJECT_ID/$DOCKER_IMAGE_NAME:$CIRCLE_BUILD_NUM -f ~/incubator-superset/contrib/docker/Dockerfile.production .
 
       - run:
           name: Push to Docker registry container
