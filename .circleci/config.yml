@@ -17,13 +17,13 @@ jobs:
 
       - run:
          name: Build Docker image
-         command: docker build -t $DOCKER_REGISTRY/$PROJECT_ID/$DOCKER_IMAGE_NAME:$CIRCLE_BUILD_NUM -f ~/incubator-superset/contrib/docker/Dockerfile.production .
+         command: docker build -t $DOCKER_REGISTRY/$PROJECT_ID/$DOCKER_IMAGE_NAME:build-$CIRCLE_BUILD_NUM -f ~/incubator-superset/contrib/docker/Dockerfile.production .
 
       - run:
           name: Push to Docker registry container
           command: |
             docker login -u $DOCKER_REGISTRY_USERNAME -p "$DOCKER_REGISTRY_PASSWORD" $DOCKER_REGISTRY
-            docker push $DOCKER_REGISTRY/$PROJECT_ID/$DOCKER_IMAGE_NAME:$CIRCLE_BUILD_NUM
+            docker push $DOCKER_REGISTRY/$PROJECT_ID/$DOCKER_IMAGE_NAME:build-$CIRCLE_BUILD_NUM
 workflows:
   version: 2.1
   build-and-deploy:
