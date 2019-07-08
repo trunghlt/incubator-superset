@@ -1,0 +1,63 @@
+---
+version: 2.1
+jobs:
+  build_image:
+    docker:
+      - image: $GCR_HOSTNAME/$GCR_PROJECT_ID/google-cloud-sdk:latest
+        auth:
+          username: _json_key
+          password: $GCR_PASSWORD
+    steps:
+      - setup_remote_docker:
+          version: 17.12.0-ce
+      - run:
+          name: configure gcloud
+          command: |
+            echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            gcloud auth configure-docker --quiet
+      - checkout
+      - restore_cache:
+          keys:
+            - docker-layers-{{ checksum "contrib/docker/prod.Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
+            - docker-layers-{{ checksum "contrib/docker/prod.Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}
+            - docker-layers-{{ checksum "contrib/docker/prod.Dockerfile" }}
+            - docker-layers-
+      - run:
+          name: Load Docker layer cache
+          command: |
+            # credits to: https://blog.jondh.me.uk/2018/04/strategies-for-docker-layer-caching-in-circleci/
+            set +o pipefail
+            if [ -f /tmp/docker-caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ]; then
+              gunzip -c /tmp/docker-caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load;
+              docker images;
+            fi
+      - run:
+          name: build & push superset image
+          command: |
+            IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-superset:build-$CIRCLE_BUILD_NUM
+            docker build -t $IMAGE -f contrib/docker/prod.Dockerfile .
+            docker push $IMAGE
+      - run:
+          name: Save Docker layer cache
+          command: |
+            IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-superset:build-$CIRCLE_BUILD_NUM
+            mkdir -p /tmp/docker-caches
+            docker history -q $IMAGE | sed '/<missing>/d' >> /tmp/dockerlayers.txt
+            docker save $(cat /tmp/dockerlayers.txt) | gzip > /tmp/docker-caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
+      - save_cache:
+          key: docker-layers-{{ checksum "contrib/docker/prod.Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
+          paths:
+            - /tmp/docker-caches
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build_image:
+          filters:
+            branches:
+              only:
+                - khoi-dev
+                - dev
