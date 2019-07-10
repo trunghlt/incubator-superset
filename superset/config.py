@@ -112,7 +112,7 @@ ENABLE_PROXY_FIX = False
 # GLOBALS FOR APP Builder
 # ------------------------------
 # Uncomment to setup Your App name
-APP_NAME = 'CITI'
+APP_NAME = 'Overfit'
 
 # Uncomment to setup an App icon
 APP_ICON = '/static/assets/images/overfit_logo.png'
