@@ -211,15 +211,15 @@ class DruidClusterModelView(SupersetModelView, DeleteMixin, YamlExportMixin):  #
         DeleteMixin._delete(self, pk)
 
 
-appbuilder.add_view(
-    DruidClusterModelView,
-    name='Druid Clusters',
-    label=__('Druid Clusters'),
-    icon='fa-cubes',
-    category='Sources',
-    category_label=__('Sources'),
-    category_icon='fa-database',
-)
+# appbuilder.add_view(
+#     DruidClusterModelView,
+#     name='Druid Clusters',
+#     label=__('Druid Clusters'),
+#     icon='fa-cubes',
+#     category='Sources',
+#     category_label=__('Sources'),
+#     category_icon='fa-database',
+# )
 
 
 class DruidDatasourceModelView(DatasourceModelView, DeleteMixin, YamlExportMixin):  # noqa
@@ -328,13 +328,13 @@ class DruidDatasourceModelView(DatasourceModelView, DeleteMixin, YamlExportMixin
         DeleteMixin._delete(self, pk)
 
 
-appbuilder.add_view(
-    DruidDatasourceModelView,
-    'Druid Datasources',
-    label=__('Druid Datasources'),
-    category='Sources',
-    category_label=__('Sources'),
-    icon='fa-cube')
+# appbuilder.add_view(
+#     DruidDatasourceModelView,
+#     'Druid Datasources',
+#     label=__('Druid Datasources'),
+#     category='Sources',
+#     category_label=__('Sources'),
+#     icon='fa-cube')
 
 
 class Druid(BaseSupersetView):
@@ -380,22 +380,22 @@ class Druid(BaseSupersetView):
 
 appbuilder.add_view_no_menu(Druid)
 
-appbuilder.add_link(
-    'Scan New Datasources',
-    label=__('Scan New Datasources'),
-    href='/druid/scan_new_datasources/',
-    category='Sources',
-    category_label=__('Sources'),
-    category_icon='fa-database',
-    icon='fa-refresh')
-appbuilder.add_link(
-    'Refresh Druid Metadata',
-    label=__('Refresh Druid Metadata'),
-    href='/druid/refresh_datasources/',
-    category='Sources',
-    category_label=__('Sources'),
-    category_icon='fa-database',
-    icon='fa-cog')
+# appbuilder.add_link(
+#     'Scan New Datasources',
+#     label=__('Scan New Datasources'),
+#     href='/druid/scan_new_datasources/',
+#     category='Sources',
+#     category_label=__('Sources'),
+#     category_icon='fa-database',
+#     icon='fa-refresh')
+# appbuilder.add_link(
+#     'Refresh Druid Metadata',
+#     label=__('Refresh Druid Metadata'),
+#     href='/druid/refresh_datasources/',
+#     category='Sources',
+#     category_label=__('Sources'),
+#     category_icon='fa-database',
+#     icon='fa-cog')
 
 
 appbuilder.add_separator('Sources')
