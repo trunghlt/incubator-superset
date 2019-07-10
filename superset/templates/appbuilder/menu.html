@@ -52,13 +52,12 @@
     }
     const selector = element.parents('ul.menu-item');
     if (selector.length) {
-        if (selector.siblings('a').attr('href') === '/login/') {
-            return;
-        }
         selector.css('display', 'block');
         selector.siblings('a').addClass('menu-active');
         element.addClass('menu-item-active');
     } else {
-        element.addClass('menu-active');
+        if (element.attr('href') !== '/login/') {
+            element.addClass('menu-active');
+        }
     }
 </script>
