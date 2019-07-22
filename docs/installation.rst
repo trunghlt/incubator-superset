@@ -123,7 +123,7 @@ that the required dependencies are installed: ::
     sudo yum upgrade python-setuptools
     sudo yum install gcc gcc-c++ libffi-devel python-devel python-pip python-wheel openssl-devel libsasl2-devel openldap-devel
 
-**Mac OS X** If possible, you should upgrade to the latest version of OS X as issues are more likely to be resolved for that version. 
+**Mac OS X** If possible, you should upgrade to the latest version of OS X as issues are more likely to be resolved for that version.
 You *will likely need* the latest version of XCode available for your installed version of OS X. You should also install
 the XCode command line tools: ::
 
@@ -346,52 +346,60 @@ connect to the databases you want to access through Superset.
 
 Here's a list of some of the recommended packages.
 
-+---------------+-------------------------------------+-------------------------------------------------+
-| database      | pypi package                        | SQLAlchemy URI prefix                           |
-+===============+=====================================+=================================================+
-|  MySQL        | ``pip install mysqlclient``         | ``mysql://``                                    |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Postgres     | ``pip install psycopg2``            | ``postgresql+psycopg2://``                      |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Presto       | ``pip install pyhive``              | ``presto://``                                   |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Hive         | ``pip install pyhive``              | ``hive://``                                     |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Oracle       | ``pip install cx_Oracle``           | ``oracle://``                                   |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  sqlite       |                                     | ``sqlite://``                                   |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Snowflake    | ``pip install snowflake-sqlalchemy``| ``snowflake://``                                |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Redshift     | ``pip install sqlalchemy-redshift`` | ``redshift+psycopg2://``                        |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  MSSQL        | ``pip install pymssql``             | ``mssql://``                                    |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Impala       | ``pip install impyla``              | ``impala://``                                   |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  SparkSQL     | ``pip install pyhive``              | ``jdbc+hive://``                                |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Greenplum    | ``pip install psycopg2``            | ``postgresql+psycopg2://``                      |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Athena       | ``pip install "PyAthenaJDBC>1.0.9"``| ``awsathena+jdbc://``                           |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Athena       | ``pip install "PyAthena>1.2.0"``    | ``awsathena+rest://``                           |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Vertica      | ``pip install                       |  ``vertica+vertica_python://``                  |
-|               | sqlalchemy-vertica-python``         |                                                 |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  ClickHouse   | ``pip install                       | ``clickhouse://``                               |
-|               | sqlalchemy-clickhouse``             |                                                 |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Kylin        | ``pip install kylinpy``             | ``kylin://``                                    |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  BigQuery     | ``pip install pybigquery``          | ``bigquery://``                                 |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Teradata     | ``pip install sqlalchemy-teradata`` | ``teradata://``                                 |
-+---------------+-------------------------------------+-------------------------------------------------+
-|  Pinot        | ``pip install pinotdb``             | ``pinot+http://controller:5436/``               |
-|               |                                     | ``query?server=http://controller:5983/``        |
-+---------------+-------------------------------------+-------------------------------------------------+
++------------------+---------------------------------------+-------------------------------------------------+
+| database         | pypi package                          | SQLAlchemy URI prefix                           |
++==================+=======================================+=================================================+
+| Amazon Athena    | ``pip install "PyAthenaJDBC>1.0.9"``  | ``awsathena+jdbc://``                           |
++------------------+---------------------------------------+-------------------------------------------------+
+| Amazon Athena    | ``pip install "PyAthena>1.2.0"``      | ``awsathena+rest://``                           |
++------------------+---------------------------------------+-------------------------------------------------+
+| Amazon Redshift  | ``pip install sqlalchemy-redshift``   | ``redshift+psycopg2://``                        |
++------------------+---------------------------------------+-------------------------------------------------+
+| Apache Drill     | ``pip install sqlalchemy-drill``      | For the REST API:``                             |
+|                  |                                       | ``drill+sadrill://``                            |
+|                  |                                       | For JDBC                                        |
+|                  |                                       | ``drill+jdbc://``                               |
++------------------+---------------------------------------+-------------------------------------------------+
+| Apache Druid     | ``pip install pyduid``                | ``druid://``                                    |
++------------------+---------------------------------------+-------------------------------------------------+
+| Apache Hive      | ``pip install pyhive``                | ``hive://``                                     |
++------------------+---------------------------------------+-------------------------------------------------+
+| Apache Impala    | ``pip install impyla``                | ``impala://``                                   |
++------------------+---------------------------------------+-------------------------------------------------+
+| Apache Kylin     | ``pip install kylinpy``               | ``kylin://``                                    |
++------------------+---------------------------------------+-------------------------------------------------+
+| Apache Pinot     | ``pip install pinotdb``               | ``pinot+http://CONTROLLER:5436/``               |
+|                  |                                       | ``query?server=http://CONTROLLER:5983/``        |
++------------------+---------------------------------------+-------------------------------------------------+
+| Apache Spark SQL | ``pip install pyhive``                | ``jdbc+hive://``                                |
++------------------+---------------------------------------+-------------------------------------------------+
+| BigQuery         | ``pip install pybigquery``            | ``bigquery://``                                 |
++------------------+---------------------------------------+-------------------------------------------------+
+| ClickHouse       | ``pip install sqlalchemy-clickhouse`` |                                                 |
++------------------+---------------------------------------+-------------------------------------------------+
+| Google Sheets    | ``pip install gsheetsdb``             | ``gsheets://``                                  |
++------------------+---------------------------------------+-------------------------------------------------+
+| IBM Db2          | ``pip install ibm_db_sa``             | ``db2+ibm_db://``                               |
++------------------+---------------------------------------+-------------------------------------------------+
+| MySQL            | ``pip install mysqlclient``           | ``mysql://``                                    |
++------------------+---------------------------------------+-------------------------------------------------+
+| Oracle           | ``pip install cx_Oracle``             | ``oracle://``                                   |
++------------------+---------------------------------------+-------------------------------------------------+
+| PostgreSQL       | ``pip install psycopg2``              | ``postgresql+psycopg2://``                      |
++------------------+---------------------------------------+-------------------------------------------------+
+| Presto           | ``pip install pyhive``                | ``presto://``                                   |
++------------------+---------------------------------------+-------------------------------------------------+
+| Snowflake        | ``pip install snowflake-sqlalchemy``  | ``snowflake://``                                |
++------------------+---------------------------------------+-------------------------------------------------+
+| SQLite           |                                       | ``sqlite://``                                   |
++------------------+---------------------------------------+-------------------------------------------------+
+| SQL Server       | ``pip install pymssql``               | ``mssql://``                                    |
++------------------+---------------------------------------+-------------------------------------------------+
+| Teradata         | ``pip install sqlalchemy-teradata``   | ``teradata://``                                 |
++------------------+---------------------------------------+-------------------------------------------------+
+| Vertica          | ``pip install                         |  ``vertica+vertica_python://``                  |
+|                  | sqlalchemy-vertica-python``           |                                                 |
++------------------+---------------------------------------+-------------------------------------------------+
 
 Note that many other databases are supported, the main criteria being the
 existence of a functional SqlAlchemy dialect and Python driver. Googling
@@ -414,6 +422,15 @@ You can also use `PyAthena` library(no java required) like this ::
     awsathena+rest://{aws_access_key_id}:{aws_secret_access_key}@athena.{region_name}.amazonaws.com/{schema_name}?s3_staging_dir={s3_staging_dir}&...
 
 See `PyAthena <https://github.com/laughingman7743/PyAthena#sqlalchemy>`_.
+
+(Google) BigQuery
+-----------------
+
+The connection string for BigQuery looks like this ::
+
+    bigquery://{project_id}
+
+To be able to upload data, e.g. sample data, the python library `pandas_gbq` is required.
 
 Snowflake
 ---------
@@ -449,6 +466,31 @@ Required environment variables: ::
 
 See `Teradata SQLAlchemy <https://github.com/Teradata/sqlalchemy-teradata>`_.
 
+Apache Drill
+------------
+At the time of writing, the SQLAlchemy Dialect is not available on pypi and must be downloaded here:
+`SQLAlchemy Drill <https://github.com/JohnOmernik/sqlalchemy-drill>`_
+
+Alternatively, you can install it completely from the command line as follows: ::
+
+    git clone https://github.com/JohnOmernik/sqlalchemy-drill
+    cd sqlalchemy-drill
+    python3 setup.py install
+
+Once that is done, you can connect to Drill in two ways, either via the REST interface or by JDBC.  If you are connecting via JDBC, you must have the
+Drill JDBC Driver installed.
+
+The basic connection string for Drill looks like this ::
+
+    drill+sadrill://{username}:{password}@{host}:{port}/{storage_plugin}?use_ssl=True
+
+If you are using JDBC to connect to Drill, the connection string looks like this: ::
+
+    drill+jdbc://{username}:{password}@{host}:{port}/{storage_plugin}
+
+For a complete tutorial about how to use Apache Drill with Superset, see this tutorial:
+`Visualize Anything with Superset and Drill <http://thedataist.com/visualize-anything-with-superset-and-drill/>`_
+
 Caching
 -------
 
@@ -478,6 +520,24 @@ into your global default defined in ``CACHE_CONFIG``.
         'CACHE_KEY_PREFIX': 'superset_results',
         'CACHE_REDIS_URL': 'redis://localhost:6379/0',
     }
+
+It is also possible to pass a custom cache initialization function in the
+config to handle additional caching use cases. The function must return an
+object that is compatible with the `Flask-Cache <https://pythonhosted.org/Flask-Cache/>`_ API.
+
+.. code-block:: python
+
+    from custom_caching import CustomCache
+
+    def init_cache(app):
+        """Takes an app instance and returns a custom cache backend"""
+        config = {
+            'CACHE_DEFAULT_TIMEOUT': 60 * 60 * 24, # 1 day default (in secs)
+            'CACHE_KEY_PREFIX': 'superset_results',
+        }
+        return CustomCache(app, config)
+
+    CACHE_CONFIG = init_cache
 
 Superset has a Celery task that will periodically warm up the cache based on
 different strategies. To use it, add the following to the `CELERYBEAT_SCHEDULE`
@@ -636,6 +696,40 @@ environment variable: ::
 
 *Adapted from http://flask.pocoo.org/snippets/69/*
 
+Event Logging
+-------------
+
+Superset by default logs special action event on it's database. These log can be accessed on the UI navigating to
+"Security" -> "Action Log". You can freely customize these logs by implementing your own event log class.
+
+Example of a simple JSON to Stdout class::
+
+    class JSONStdOutEventLogger(AbstractEventLogger):
+
+        def log(self, user_id, action, *args, **kwargs):
+            records = kwargs.get('records', list())
+            dashboard_id = kwargs.get('dashboard_id')
+            slice_id = kwargs.get('slice_id')
+            duration_ms = kwargs.get('duration_ms')
+            referrer = kwargs.get('referrer')
+
+            for record in records:
+                log = dict(
+                    action=action,
+                    json=record,
+                    dashboard_id=dashboard_id,
+                    slice_id=slice_id,
+                    duration_ms=duration_ms,
+                    referrer=referrer,
+                    user_id=user_id
+                )
+                print(json.dumps(log))
+
+
+Then on Superset's config reference the class you want to use::
+
+    EVENT_LOGGER = JSONStdOutEventLogger
+
 
 Upgrading
 ---------
@@ -660,10 +754,6 @@ users are active on the platform.
 
 Celery Tasks
 ------------
-On large analytic databases, it's common to run background jobs, reports
-and/or queries that execute for minutes or hours. In certain cases, we need
-to support long running tasks that execute beyond the typical web request's
-timeout (30-60 seconds).
 
 On large analytic databases, it's common to run queries that
 execute for minutes or hours.
@@ -821,6 +911,7 @@ You can configure which validation implementation is used with which database
 engine by adding a block like the following to your config.py:
 
 .. code-block:: python
+
      FEATURE_FLAGS = {
          'SQL_VALIDATORS_BY_ENGINE': {
              'presto': 'PrestoDBSQLValidator',
@@ -911,11 +1002,17 @@ To allow scheduled queries, add the following to your `config.py`:
                     'container': 'end_date',
                 },
             ],
+            # link to the scheduler; this example links to an Airflow pipeline
+            # that uses the query id and the output table as its name
+            'linkback': (
+                'https://airflow.example.com/admin/airflow/tree?'
+                'dag_id=query_${id}_${extra_json.schedule_info.output_table}'
+            ),
         },
     }
 
 This feature flag is based on [react-jsonschema-form](https://github.com/mozilla-services/react-jsonschema-form),
-and will add a button called "Schedule Query" to SQL Lab. When the button is 
+and will add a button called "Schedule Query" to SQL Lab. When the button is
 clicked, a modal will show up where the user can add the metadata required for
 scheduling the query.
 
