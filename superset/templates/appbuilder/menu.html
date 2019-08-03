@@ -1,0 +1,63 @@
+{% macro menu_item(item) %}
+    <a tabindex="-1" href="{{item.get_url()}}">
+    {{_(item.label)}}</a>
+{% endmacro %}
+
+{% for item1 in menu.get_list() %}
+    {% if item1 | is_menu_visible %}
+        {% if item1.childs %}
+            <li class="dropdown">
+            <a class="dropdown-toggle">{{_(item1.label)}}</a>
+            <ul class="menu-item">
+            {% for item2 in item1.childs %}
+                {% if item2 %}
+                    {% if item2.name == '-' %}
+                        {% if not loop.last %}
+                        {% endif %}
+                    {% elif item2 | is_menu_visible %}
+                        <li class="item">{{ menu_item(item2) }}</li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            </ul>
+          </li>
+        {% else %}
+            <li>
+                {{ menu_item(item1) }}
+            </li>
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $('.menu-left a.dropdown-toggle').click(function() {
+            if ($(this).hasClass('menu-active')) {
+                $(this).removeClass('menu-active');
+                $(this).siblings('.menu-item').css('display', 'none');
+            } else {
+                $('.menu-left a.dropdown-toggle').removeClass('menu-active');
+                $('.menu-left .menu-item').css('display', 'none');
+                $(this).addClass('menu-active');
+                $(this).siblings('.menu-item').css('display', 'block');
+            }
+        });
+    });
+    const pathName = window.location.pathname;
+    let element = $(`a[href='${pathName}']`);
+    if (!element.length) {
+        const link = (location.pathname+location.search).substr(0);
+        element = $(`a[href='${link}']`);
+    }
+    const selector = element.parents('ul.menu-item');
+    if (selector.length) {
+        selector.css('display', 'block');
+        selector.siblings('a').addClass('menu-active');
+        element.addClass('menu-item-active');
+    } else {
+        if (element.attr('href') !== '/login/') {
+            element.addClass('menu-active');
+        }
+    }
+</script>

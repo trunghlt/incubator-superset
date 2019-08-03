@@ -19,10 +19,10 @@
 {% set menu = appbuilder.menu %}
 {% set languages = appbuilder.languages %}
 {% set WARNING_MSG = appbuilder.app.config.get('WARNING_MSG') %}
-{% set app_icon_width = appbuilder.app.config.get('APP_ICON_WIDTH', 126) %}
+{% set app_icon_width = appbuilder.app.config.get('APP_ICON_WIDTH', 40) %}
 {% set logo_target_path = appbuilder.app.config.get('LOGO_TARGET_PATH') or '/profile/{}/'.format(current_user.username) %}
 
-<div class="navbar navbar-static-top {{menu.extra_classes}}" role="navigation">
+<div class="navbar navbar-static-top {{menu.extra_classes}} mt-0" role="navigation">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -39,14 +39,6 @@
       </a>
     </div>
     <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        {% if WARNING_MSG %}
-          <li class="alert alert-danger">
-            {{ WARNING_MSG | safe }}
-          </li>
-        {% endif %}
-        {% include 'appbuilder/navbar_menu.html' %}
-      </ul>
       <ul class="nav navbar-nav navbar-right">
         {% include 'appbuilder/navbar_right.html' %}
       </ul>
