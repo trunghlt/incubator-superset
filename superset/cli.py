@@ -23,10 +23,13 @@ from sys import stdout
 
 import click
 from colorama import Fore, Style
+from flask import g
+from flask_appbuilder import Model
 from pathlib2 import Path
 import yaml
 
 from superset import app, appbuilder, db, examples, security_manager
+from superset.common.tags import add_favorites, add_owners, add_types
 from superset.utils import core as utils, dashboard_import_export, dict_import_export
 
 config = app.config
@@ -141,6 +144,14 @@ def load_examples(load_test_data, only_metadata=False, force=False):
 
 
 @app.cli.command()
+@click.option("--database_name", "-d", help="Database name to change")
+@click.option("--uri", "-u", help="Database URI to change")
+def set_database_uri(database_name, uri):
+    """Updates a database connection URI """
+    utils.get_or_create_db(database_name, uri)
+
+
+@app.cli.command()
 @click.option(
     "--datasource",
     "-d",
@@ -184,7 +195,13 @@ def refresh_druid(datasource, merge):
     default=False,
     help="recursively search the path for json files",
 )
-def import_dashboards(path, recursive):
+@click.option(
+    "--username",
+    "-u",
+    default=None,
+    help="Specify the user name to assign dashboards to",
+)
+def import_dashboards(path, recursive, username):
     """Import dashboards from JSON"""
     p = Path(path)
     files = []
@@ -194,6 +211,8 @@ def import_dashboards(path, recursive):
         files.extend(p.glob("*.json"))
     elif p.exists() and recursive:
         files.extend(p.rglob("*.json"))
+    if username is not None:
+        g.user = security_manager.find_user(username=username)
     for f in files:
         logging.info("Importing dashboard from file %s", f)
         try:
@@ -480,3 +499,13 @@ def load_test_users_run():
                 password="general",
             )
         security_manager.get_session.commit()
+
+
+@app.cli.command()
+def sync_tags():
+    """Rebuilds special tags (owner, type, favorited by)."""
+    # pylint: disable=no-member
+    metadata = Model.metadata
+    add_types(db.engine, metadata)
+    add_owners(db.engine, metadata)
+    add_favorites(db.engine, metadata)

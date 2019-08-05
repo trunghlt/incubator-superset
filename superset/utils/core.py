@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 # pylint: disable=C,R,W
+# flake8: noqa I202
 """Utility functions used across Superset"""
 from datetime import date, datetime, time, timedelta
 import decimal
@@ -51,7 +52,11 @@ import markdown as md
 import numpy
 import pandas as pd
 import parsedatetime
-from pydruid.utils.having import Having
+
+try:
+    from pydruid.utils.having import Having
+except ImportError:
+    pass
 import sqlalchemy as sa
 from sqlalchemy import event, exc, select, Text
 from sqlalchemy.dialects.mysql import MEDIUMTEXT
@@ -71,6 +76,25 @@ ADHOC_METRIC_EXPRESSION_TYPES = {"SIMPLE": "SIMPLE", "SQL": "SQL"}
 JS_MAX_INTEGER = 9007199254740991  # Largest int Java Script can handle 2^53-1
 
 sources = {"chart": 0, "dashboard": 1, "sql_lab": 2}
+
+try:
+    # Having might not have been imported.
+    class DimSelector(Having):
+        def __init__(self, **args):
+            # Just a hack to prevent any exceptions
+            Having.__init__(self, type="equalTo", aggregation=None, value=None)
+
+            self.having = {
+                "having": {
+                    "type": "dimSelector",
+                    "dimension": args["dimension"],
+                    "value": args["value"],
+                }
+            }
+
+
+except NameError:
+    pass
 
 
 def flasher(msg, severity=None):
@@ -179,20 +203,6 @@ def string_to_num(s: str):
         return None
 
 
-class DimSelector(Having):
-    def __init__(self, **args):
-        # Just a hack to prevent any exceptions
-        Having.__init__(self, type="equalTo", aggregation=None, value=None)
-
-        self.having = {
-            "having": {
-                "type": "dimSelector",
-                "dimension": args["dimension"],
-                "value": args["value"],
-            }
-        }
-
-
 def list_minus(l: List, minus: List) -> List:
     """Returns l without what is in minus
 
@@ -254,25 +264,15 @@ def decode_dashboards(o):
     from superset.connectors.sqla.models import SqlaTable, SqlMetric, TableColumn
 
     if "__Dashboard__" in o:
-        d = models.Dashboard()
-        d.__dict__.update(o["__Dashboard__"])
-        return d
+        return models.Dashboard(**o["__Dashboard__"])
     elif "__Slice__" in o:
-        d = models.Slice()
-        d.__dict__.update(o["__Slice__"])
-        return d
+        return models.Slice(**o["__Slice__"])
     elif "__TableColumn__" in o:
-        d = TableColumn()
-        d.__dict__.update(o["__TableColumn__"])
-        return d
+        return TableColumn(**o["__TableColumn__"])
     elif "__SqlaTable__" in o:
-        d = SqlaTable()
-        d.__dict__.update(o["__SqlaTable__"])
-        return d
+        return SqlaTable(**o["__SqlaTable__"])
     elif "__SqlMetric__" in o:
-        d = SqlMetric()
-        d.__dict__.update(o["__SqlMetric__"])
-        return d
+        return SqlMetric(**o["__SqlMetric__"])
     elif "__datetime__" in o:
         return datetime.strptime(o["__datetime__"], "%Y-%m-%dT%H:%M:%S")
     else:
