@@ -167,6 +167,7 @@
     "cache-loader": "^1.2.2",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^1.0.0",
+    "cypress": "^3.3.2",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.19.1",
