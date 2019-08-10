@@ -969,7 +969,7 @@ def get_or_create_db(database_name, sqlalchemy_uri, *args, **kwargs):
 def get_main_database():
     from superset import conf
 
-    return get_or_create_db("main", conf.get("SQLALCHEMY_DATABASE_URI"))
+    return get_or_create_db("main", conf.get("SQLALCHEMY_DATABASE_URI"), allow_csv_upload=True)
 
 
 def get_example_database():
