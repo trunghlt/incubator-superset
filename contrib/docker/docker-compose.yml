@@ -49,7 +49,7 @@ services:
       POSTGRES_PORT: 5432
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      GOOGLE_APPLICATION_CREDENTIALS: /home/superset/superset/hanhaa-etgnlg-3ef95341c970.json
+      GOOGLE_APPLICATION_CREDENTIALS: /home/superset/superset/dialogflow-credentials.json
       # If using production, comment development volume below
       #SUPERSET_ENV: production
       SUPERSET_ENV: development
