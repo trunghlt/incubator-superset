@@ -622,6 +622,9 @@ TALISMAN_CONFIG = {
 # SQLALCHEMY_DATABASE_URI by default if set to `None`
 SQLALCHEMY_EXAMPLES_URI = None
 
+# Configure project_id to connect to the dialogflow
+DIALOGFLOW_PROJECT_ID = "hanhaa-etgnlg"
+
 try:
     if CONFIG_PATH_ENV_VAR in os.environ:
         # Explicitly import config module that is not in pythonpath; useful
