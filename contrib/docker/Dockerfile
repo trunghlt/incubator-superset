@@ -44,24 +44,7 @@ RUN useradd -U -m superset && \
         libssl1.0 && \
     apt-get clean && \
     rm -r /var/lib/apt/lists/* && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir \
-        flask-cors==3.0.3 \
-        flask-mail==0.9.1 \
-        flask-oauth==0.12 \
-        flask_oauthlib==0.9.3 \
-        gevent==1.2.2 \
-        impyla==0.14.0 \
-        infi.clickhouse-orm==1.0.2 \
-        mysqlclient==1.4.4 \
-        psycopg2==2.8.3 \
-        pyathena==1.2.5 \
-        pyhive==0.5.1 \
-        pyldap==2.4.28 \
-        pymssql==2.1.3 \
-        redis==2.10.5 \
-        sqlalchemy-clickhouse==0.1.5.post0 \
-        sqlalchemy-redshift==0.7.1
+    pip install --no-cache-dir -r requirements.txt
 
 # Configure Filesystem
 COPY superset /home/superset
