@@ -53,7 +53,7 @@ RUN useradd -U -m superset && \
         gevent==1.2.2 \
         impyla==0.14.0 \
         infi.clickhouse-orm==1.0.2 \
-        mysqlclient==1.3.7 \
+        mysqlclient==1.4.4 \
         psycopg2==2.8.3 \
         pyathena==1.2.5 \
         pyhive==0.5.1 \
