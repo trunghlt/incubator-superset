@@ -18,6 +18,12 @@ jobs:
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
             gcloud auth configure-docker --quiet
       - checkout
+      - run:
+          name: import GPG public key to read git secret
+          command: |
+            echo $GPG_PRIVATE_KEY | base64 -d > private.key
+            gpg --import private.key
+            rm private.key
       - restore_cache:
           keys:
             - docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
@@ -37,6 +43,7 @@ jobs:
           name: build & push superset image
           command: |
             IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-superset:build-$CIRCLE_BUILD_NUM
+            git secret reveal
             docker build -t $IMAGE -f contrib/docker/Dockerfile .
             docker push $IMAGE
       - run:

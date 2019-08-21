@@ -27,6 +27,8 @@ from flask_appbuilder.security.decorators import has_access
 from flask_babel import gettext as __
 from flask_babel import lazy_gettext as _
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms.fields import SelectField
+from superset.config import DIALOGFLOW_PROJECT_ID
 
 from superset import appbuilder, db, security_manager
 from superset.connectors.base.views import DatasourceModelView
@@ -40,6 +42,7 @@ from superset.views.base import (
     YamlExportMixin,
 )
 from . import models
+from superset.utils.dialogflow import list_entity_types
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +65,7 @@ class TableColumnInlineView(CompactCRUDMixin, SupersetModelView):  # noqa
         "groupby",
         "filterable",
         "table",
+        "entity",
         "expression",
         "is_dttm",
         "python_date_format",
@@ -128,6 +132,11 @@ class TableColumnInlineView(CompactCRUDMixin, SupersetModelView):  # noqa
             query_factory=lambda: db.session().query(models.SqlaTable),
             allow_blank=True,
             widget=Select2Widget(extra_classes="readonly"),
+        ),
+        "entity": SelectField(
+            "Entity",
+            choices=list_entity_types(DIALOGFLOW_PROJECT_ID),
+            widget=Select2Widget(),
         )
     }
 
