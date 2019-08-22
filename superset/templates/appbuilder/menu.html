@@ -51,12 +51,14 @@
         element = $(`a[href='${link}']`);
     }
     const selector = element.parents('ul.menu-item');
+    console.log(selector);
+    
     if (selector.length) {
         selector.css('display', 'block');
         selector.siblings('a').addClass('menu-active');
         element.addClass('menu-item-active');
     } else {
-        if (element.attr('href') !== '/login/') {
+        if (element.attr('href' !== '/superset/profile/admin/')) {
             element.addClass('menu-active');
         }
     }

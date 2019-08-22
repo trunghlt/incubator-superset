@@ -124,7 +124,7 @@ class TableColumn(Model, BaseColumn):
     is_dttm = Column(Boolean, default=False)
     expression = Column(Text)
     python_date_format = Column(String(255))
-    entity = Column(String(255))
+    entity = Column(String(255), unique=True)
 
     export_fields = (
         "table_id",
@@ -234,6 +234,7 @@ class SqlMetric(Model, BaseMetric):
         foreign_keys=[table_id],
     )
     expression = Column(Text, nullable=False)
+    entity = Column(String(255), unique=True)
 
     export_fields = (
         "metric_name",
@@ -245,6 +246,7 @@ class SqlMetric(Model, BaseMetric):
         "is_restricted",
         "d3format",
         "warning_text",
+        "entity"
     )
     update_from_object_fields = list(
         [s for s in export_fields if s not in ("table_id",)]
@@ -320,6 +322,7 @@ class SqlaTable(Model, BaseDatasource):
     sql = Column(Text)
     is_sqllab_view = Column(Boolean, default=False)
     template_params = Column(Text)
+    entity = Column(String(255), unique=True)
 
     baselink = "tablemodelview"
 
@@ -337,6 +340,7 @@ class SqlaTable(Model, BaseDatasource):
         "template_params",
         "filter_select_enabled",
         "fetch_values_predicate",
+        "entity"
     )
     update_from_object_fields = [
         f for f in export_fields if f not in ("table_name", "database_id")
