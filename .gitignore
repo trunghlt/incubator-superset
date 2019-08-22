@@ -85,5 +85,3 @@ apache-superset-*.tar.gz*
 # Translation binaries
 messages.mo
 superset/dialogflow-credentials.json
-.gitsecret/keys/random_seed
-!*.secret
