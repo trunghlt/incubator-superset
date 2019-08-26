@@ -20,9 +20,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - docker-layers-{{ checksum "contrib/docker/prod.Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
-            - docker-layers-{{ checksum "contrib/docker/prod.Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}
-            - docker-layers-{{ checksum "contrib/docker/prod.Dockerfile" }}
+            - docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
+            - docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}
+            - docker-layers-{{ checksum "contrib/docker/Dockerfile" }}
             - docker-layers-
       - run:
           name: Load Docker layer cache
@@ -37,7 +37,7 @@ jobs:
           name: build & push superset image
           command: |
             IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-superset:build-$CIRCLE_BUILD_NUM
-            docker build -t $IMAGE -f contrib/docker/prod.Dockerfile .
+            docker build -t $IMAGE -f contrib/docker/Dockerfile .
             docker push $IMAGE
       - run:
           name: Save Docker layer cache
@@ -47,7 +47,7 @@ jobs:
             docker history -q $IMAGE | sed '/<missing>/d' >> /tmp/dockerlayers.txt
             docker save $(cat /tmp/dockerlayers.txt) | gzip > /tmp/docker-caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
       - save_cache:
-          key: docker-layers-{{ checksum "contrib/docker/prod.Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
+          key: docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
           paths:
             - /tmp/docker-caches
 
@@ -55,9 +55,4 @@ workflows:
   version: 2
   test:
     jobs:
-      - build_image:
-          filters:
-            branches:
-              only:
-                - khoi-dev
-                - dev
+      - build_image

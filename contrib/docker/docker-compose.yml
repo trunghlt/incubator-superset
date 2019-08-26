@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-version: '2'
+version: "2"
 services:
   redis:
     image: redis:3.2
@@ -49,20 +49,26 @@ services:
       POSTGRES_PORT: 5432
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      GOOGLE_APPLICATION_CREDENTIALS: /home/superset/superset/dialogflow-credentials.json
       # If using production, comment development volume below
       #SUPERSET_ENV: production
       SUPERSET_ENV: development
+      FLASK_ENV: development
+      FLASK_APP: superset:app
     user: root:root
     ports:
       - 8088:8088
     depends_on:
       - postgres
       - redis
+    tmpfs: /mnt/memory
     volumes:
-      # this is needed to communicate with the postgres and redis services
       - ./superset_config.py:/home/superset/superset/superset_config.py
-      # this is needed for development, remove with SUPERSET_ENV=production
       - ../../superset:/home/superset/superset
+    command:
+      - /bin/bash
+      - -c
+      - flask run -p 8088 --with-threads --reload --debugger --host=0.0.0.0
 
 volumes:
   postgres:

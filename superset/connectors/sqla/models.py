@@ -124,6 +124,7 @@ class TableColumn(Model, BaseColumn):
     is_dttm = Column(Boolean, default=False)
     expression = Column(Text)
     python_date_format = Column(String(255))
+    entity = Column(String(255))
 
     export_fields = (
         "table_id",
@@ -137,6 +138,7 @@ class TableColumn(Model, BaseColumn):
         "expression",
         "description",
         "python_date_format",
+        "entity",
     )
 
     update_from_object_fields = [s for s in export_fields if s not in ("table_id",)]
