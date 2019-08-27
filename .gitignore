@@ -82,6 +82,9 @@ testCSV.csv
 .terser-plugin-cache/
 apache-superset-*.tar.gz*
 
+# Docker dev environment
+contrib/docker/dev.Dockerfile
+
 # Translation binaries
 messages.mo
 superset/dialogflow-credentials.json
