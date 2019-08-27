@@ -88,5 +88,3 @@ contrib/docker/dev.Dockerfile
 # Translation binaries
 messages.mo
 superset/dialogflow-credentials.json
-.gitsecret/keys/random_seed
-!*.secret
