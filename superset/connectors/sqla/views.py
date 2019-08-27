@@ -162,6 +162,7 @@ class SqlMetricInlineView(CompactCRUDMixin, SupersetModelView):  # noqa
         "metric_type",
         "expression",
         "table",
+        "entity",
         "d3format",
         "is_restricted",
         "warning_text",
@@ -207,6 +208,11 @@ class SqlMetricInlineView(CompactCRUDMixin, SupersetModelView):  # noqa
             query_factory=lambda: db.session().query(models.SqlaTable),
             allow_blank=True,
             widget=Select2Widget(extra_classes="readonly"),
+        ),
+        "entity": SelectField(
+            "Entity",
+            choices=list_entity_types(DIALOGFLOW_PROJECT_ID),
+            widget=Select2Widget(),
         )
     }
 
@@ -245,6 +251,7 @@ class TableModelView(DatasourceModelView, DeleteMixin, YamlExportMixin):  # noqa
         "filter_select_enabled",
         "fetch_values_predicate",
         "database",
+        "entity",
         "schema",
         "description",
         "owners",
@@ -338,6 +345,11 @@ class TableModelView(DatasourceModelView, DeleteMixin, YamlExportMixin):  # noqa
             "Database",
             query_factory=lambda: db.session().query(models.Database),
             widget=Select2Widget(extra_classes="readonly"),
+        ),
+        "entity": SelectField(
+            "Entity",
+            choices=list_entity_types(DIALOGFLOW_PROJECT_ID),
+            widget=Select2Widget(),
         )
     }
 
