@@ -10,7 +10,6 @@ def list_entity_types(project_id):
 
     entity_types_array = [('', '')]
     for entity_type in entity_types:
-        name_split = entity_type.name.split('/')
-        entity_types_array.append((name_split[-1], entity_type.display_name))
+        entity_types_array.append((entity_type.display_name, entity_type.display_name))
 
     return entity_types_array
