@@ -99,3 +99,14 @@ redis==2.10.5
 sqlalchemy-clickhouse==0.1.5.post0
 sqlalchemy-redshift==0.7.1
 dialogflow==0.6.0
+PyAthenaJDBC==2.0.5
+pydruid==0.5.6
+kylinpy==2.3.1
+pinotdb==0.2.1
+pybigquery==0.4.11
+gsheetsdb==0.1.9
+ibm-db-sa==0.3.5
+cx-Oracle==7.2.2
+snowflake-sqlalchemy==1.1.14
+sqlalchemy-teradata==0.9.0.dev0
+sqlalchemy-vertica-python==0.4.4
