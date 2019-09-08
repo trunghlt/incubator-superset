@@ -83,3 +83,52 @@
     top: 15;
   }
 }
+.p-0 {
+  padding: 0 !important;
+}
+.login-custom {
+  h1 {
+    color: @brand-primary;
+    font-size: 5rem;
+    font-weight: 600;
+  }
+  .image-cover {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+  }
+  .frames-cover {
+    padding: 0;
+  }
+  #loginbox {
+    padding: 100px;
+  }
+  .app-name {
+    text-align: center;
+  }
+  .input-group {
+    margin-bottom: 30px;
+
+    .form-control {
+      border-color: @background-input;
+      border-radius: 2px;
+      background-color: @background-input;
+      box-shadow: none;
+    }
+  }
+  .control-label {
+    color: @text-grey;
+  }
+
+  @media screen and (max-width: 991px) {
+    .frames-cover {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    #loginbox {
+      padding: 50px 0;
+    }
+  }
+}
