@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 # pylint: disable=C,R,W
-from datetime import datetime
-
 from superset.db_engine_specs.base import BaseEngineSpec, LimitMethod
 
 
@@ -50,9 +48,9 @@ class Db2EngineSpec(BaseEngineSpec):
     }
 
     @classmethod
-    def epoch_to_dttm(cls) -> str:
+    def epoch_to_dttm(cls):
         return "(TIMESTAMP('1970-01-01', '00:00:00') + {col} SECONDS)"
 
     @classmethod
-    def convert_dttm(cls, target_type: str, dttm: datetime) -> str:
+    def convert_dttm(cls, target_type, dttm):
         return "'{}'".format(dttm.strftime("%Y-%m-%d-%H.%M.%S"))

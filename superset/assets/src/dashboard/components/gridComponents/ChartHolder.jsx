@@ -19,7 +19,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import FilterIndicators from '../../containers/FilterIndicators';
 import Chart from '../../containers/Chart';
 import AnchorLink from '../../../components/AnchorLink';
 import DeleteComponentButton from '../DeleteComponentButton';
@@ -28,13 +27,11 @@ import HoverMenu from '../menu/HoverMenu';
 import ResizableContainer from '../resizable/ResizableContainer';
 import { componentShape } from '../../util/propShapes';
 import { ROW_TYPE, COLUMN_TYPE } from '../../util/componentTypes';
-
 import {
   GRID_MIN_COLUMN_COUNT,
   GRID_MIN_ROW_UNITS,
   GRID_BASE_UNIT,
   GRID_GUTTER_SIZE,
-  IN_COMPONENT_ELEMENT_TYPES,
 } from '../../util/constants';
 
 const CHART_MARGIN = 32;
@@ -47,7 +44,6 @@ const propTypes = {
   index: PropTypes.number.isRequired,
   depth: PropTypes.number.isRequired,
   editMode: PropTypes.bool.isRequired,
-  directPathToChild: PropTypes.arrayOf(PropTypes.string),
 
   // grid related
   availableColumnCount: PropTypes.number.isRequired,
@@ -62,21 +58,9 @@ const propTypes = {
   handleComponentDrop: PropTypes.func.isRequired,
 };
 
-const defaultProps = {
-  directPathToChild: [],
-};
+const defaultProps = {};
 
 class ChartHolder extends React.Component {
-  static renderInFocusCSS(labelName) {
-    return (
-      <style>
-        {`.inFocus label[for=${labelName}] + .Select .Select-control {
-                    border: 2px solid #00736a;
-           }`}
-      </style>
-    );
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -86,27 +70,6 @@ class ChartHolder extends React.Component {
     this.handleChangeFocus = this.handleChangeFocus.bind(this);
     this.handleDeleteComponent = this.handleDeleteComponent.bind(this);
     this.handleUpdateSliceName = this.handleUpdateSliceName.bind(this);
-  }
-
-  getChartAndLabelComponentIdFromPath() {
-    const { directPathToChild = [] } = this.props;
-    const result = {};
-
-    if (directPathToChild.length > 0) {
-      const currentPath = directPathToChild.slice();
-
-      while (currentPath.length) {
-        const componentId = currentPath.pop();
-        const componentType = componentId.split('-')[0];
-
-        result[componentType.toLowerCase()] = componentId;
-        if (!IN_COMPONENT_ELEMENT_TYPES.includes(componentType)) {
-          break;
-        }
-      }
-    }
-
-    return result;
   }
 
   handleChangeFocus(nextFocus) {
@@ -155,12 +118,6 @@ class ChartHolder extends React.Component {
         ? parentComponent.meta.width || GRID_MIN_COLUMN_COUNT
         : component.meta.width || GRID_MIN_COLUMN_COUNT;
 
-    const {
-      label: labelName,
-      chart: chartComponentId,
-    } = this.getChartAndLabelComponentIdFromPath();
-    const inFocus = chartComponentId === component.id;
-
     return (
       <DragDroppable
         component={component}
@@ -191,14 +148,9 @@ class ChartHolder extends React.Component {
           >
             <div
               ref={dragSourceRef}
-              className={`dashboard-component dashboard-component-chart-holder ${
-                inFocus ? 'inFocus' : ''
-              }`}
+              className="dashboard-component dashboard-component-chart-holder"
             >
-              {!editMode && (
-                <AnchorLink anchorLinkId={component.id} inFocus={inFocus} />
-              )}
-              {inFocus && ChartHolder.renderInFocusCSS(labelName)}
+              {!editMode && <AnchorLink anchorLinkId={component.id} />}
               <Chart
                 componentId={component.id}
                 id={component.meta.chartId}
@@ -214,9 +166,6 @@ class ChartHolder extends React.Component {
                 updateSliceName={this.handleUpdateSliceName}
                 isComponentVisible={isComponentVisible}
               />
-              {!editMode && (
-                <FilterIndicators chartId={component.meta.chartId} />
-              )}
               {editMode && (
                 <HoverMenu position="top">
                   <DeleteComponentButton

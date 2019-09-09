@@ -43,6 +43,7 @@ class ShareSqlLabQuery extends React.Component {
     super(props);
     this.state = {
       shortUrl: t('Loading ...'),
+      showOverlay: false,
     };
     this.getCopyUrl = this.getCopyUrl.bind(this);
   }
@@ -56,10 +57,11 @@ class ShareSqlLabQuery extends React.Component {
         this.setState({ shortUrl });
       })
       .catch((response) => {
-        getClientErrorObject(response).then(({ error }) => {
-          this.props.addDangerToast(error);
-          this.setState({ shortUrl: t('Error') });
-        });
+        getClientErrorObject(response)
+          .then(({ error }) => {
+            this.props.addDangerToast(error);
+            this.setState({ shortUrl: t('Error') });
+          });
       });
   }
 

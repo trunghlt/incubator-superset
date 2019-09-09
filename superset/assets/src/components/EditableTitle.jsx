@@ -61,7 +61,7 @@ export default class EditableTitle extends React.PureComponent {
     this.contentRef = React.createRef();
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.title !== this.state.title) {
       this.setState({
         lastTitle: this.state.title,

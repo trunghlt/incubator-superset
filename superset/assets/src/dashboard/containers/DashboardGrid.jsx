@@ -24,7 +24,6 @@ import {
   handleComponentDrop,
   resizeComponent,
 } from '../actions/dashboardLayout';
-import { setDirectPathToChild } from '../actions/dashboardState';
 
 function mapStateToProps({ dashboardState }) {
   return {
@@ -37,7 +36,6 @@ function mapDispatchToProps(dispatch) {
     {
       handleComponentDrop,
       resizeComponent,
-      setDirectPathToChild,
     },
     dispatch,
   );

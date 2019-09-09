@@ -70,7 +70,7 @@ describe('ResultSet', () => {
     beforeEach(() => {
       clearQuerySpy.reset();
       fetchQuerySpy.reset();
-      spy = sinon.spy(ResultSet.prototype, 'UNSAFE_componentWillReceiveProps');
+      spy = sinon.spy(ResultSet.prototype, 'componentWillReceiveProps');
     });
     afterEach(() => {
       spy.restore();

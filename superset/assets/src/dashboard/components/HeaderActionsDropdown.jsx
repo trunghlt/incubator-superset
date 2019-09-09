@@ -76,7 +76,7 @@ class HeaderActionsDropdown extends React.PureComponent {
     this.changeRefreshInterval = this.changeRefreshInterval.bind(this);
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     injectCustomCss(this.state.css);
 
     SupersetClient.get({ endpoint: '/csstemplateasyncmodelview/api/read' })

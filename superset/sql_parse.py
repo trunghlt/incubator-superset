@@ -16,7 +16,7 @@
 # under the License.
 # pylint: disable=C,R,W
 import logging
-from typing import List, Optional, Set
+from typing import Optional
 
 import sqlparse
 from sqlparse.sql import Identifier, IdentifierList, remove_quotes, Token, TokenList
@@ -31,10 +31,10 @@ CTE_PREFIX = "CTE__"
 
 class ParsedQuery(object):
     def __init__(self, sql_statement):
-        self.sql: str = sql_statement
-        self._table_names: Set[str] = set()
-        self._alias_names: Set[str] = set()
-        self._limit: Optional[int] = None
+        self.sql = sql_statement
+        self._table_names = set()
+        self._alias_names = set()
+        self._limit = None
 
         logging.info("Parsing with sqlparse statement {}".format(self.sql))
         self._parsed = sqlparse.parse(self.stripped())
@@ -44,27 +44,27 @@ class ParsedQuery(object):
         self._table_names = self._table_names - self._alias_names
 
     @property
-    def tables(self) -> Set[str]:
+    def tables(self):
         return self._table_names
 
     @property
-    def limit(self) -> Optional[int]:
+    def limit(self):
         return self._limit
 
-    def is_select(self) -> bool:
+    def is_select(self):
         return self._parsed[0].get_type() == "SELECT"
 
-    def is_explain(self) -> bool:
+    def is_explain(self):
         return self.stripped().upper().startswith("EXPLAIN")
 
-    def is_readonly(self) -> bool:
+    def is_readonly(self):
         """Pessimistic readonly, 100% sure statement won't mutate anything"""
         return self.is_select() or self.is_explain()
 
-    def stripped(self) -> str:
+    def stripped(self):
         return self.sql.strip(" \t\n;")
 
-    def get_statements(self) -> List[str]:
+    def get_statements(self):
         """Returns a list of SQL statements as strings, stripped"""
         statements = []
         for statement in self._parsed:
@@ -105,39 +105,36 @@ class ParsedQuery(object):
         return None
 
     @staticmethod
-    def __is_identifier(token: Token) -> bool:
+    def __is_identifier(token: Token):
         return isinstance(token, (IdentifierList, Identifier))
 
-    def __process_tokenlist(self, token_list: TokenList):
-        """
-        Add table names to table set
-
-        :param token_list: TokenList to be processed
-        """
+    def __process_tokenlist(self, tlist: TokenList):
         # exclude subselects
-        if "(" not in str(token_list):
-            table_name = self.__get_full_name(token_list)
+        if "(" not in str(tlist):
+            table_name = self.__get_full_name(tlist)
             if table_name and not table_name.startswith(CTE_PREFIX):
                 self._table_names.add(table_name)
             return
 
         # store aliases
-        if token_list.has_alias():
-            self._alias_names.add(token_list.get_alias())
+        if tlist.has_alias():
+            self._alias_names.add(tlist.get_alias())
 
         # some aliases are not parsed properly
-        if token_list.tokens[0].ttype == Name:
-            self._alias_names.add(token_list.tokens[0].value)
-        self.__extract_from_token(token_list)
+        if tlist.tokens[0].ttype == Name:
+            self._alias_names.add(tlist.tokens[0].value)
+        self.__extract_from_token(tlist)
 
-    def as_create_table(self, table_name: str, overwrite: bool = False) -> str:
+    def as_create_table(self, table_name, overwrite=False):
         """Reformats the query into the create table as query.
 
         Works only for the single select SQL statements, in all other cases
         the sql query is not modified.
-        :param table_name: Table that will contain the results of the query execution
-        :param overwrite: table_name will be dropped if true
-        :return: Create table as query
+        :param superset_query: string, sql query that will be executed
+        :param table_name: string, will contain the results of the
+            query execution
+        :param overwrite, boolean, table table_name will be dropped if true
+        :return: string, create table as query
         """
         exec_sql = ""
         sql = self.stripped()
@@ -146,12 +143,7 @@ class ParsedQuery(object):
         exec_sql += f"CREATE TABLE {table_name} AS \n{sql}"
         return exec_sql
 
-    def __extract_from_token(self, token: Token):
-        """
-        Populate self._table_names from token
-
-        :param token: instance of Token or child class, e.g. TokenList, to be processed
-        """
+    def __extract_from_token(self, token, depth=0):
         if not hasattr(token, "tokens"):
             return
 
@@ -159,7 +151,7 @@ class ParsedQuery(object):
 
         for item in token.tokens:
             if item.is_group and not self.__is_identifier(item):
-                self.__extract_from_token(item)
+                self.__extract_from_token(item, depth=depth + 1)
 
             if item.ttype in Keyword and (
                 item.normalized in PRECEDES_TABLE_NAME
@@ -182,15 +174,9 @@ class ParsedQuery(object):
             elif isinstance(item, IdentifierList):
                 for token in item.tokens:
                     if not self.__is_identifier(token):
-                        self.__extract_from_token(item)
+                        self.__extract_from_token(item, depth=depth + 1)
 
-    def _extract_limit_from_query(self, statement: TokenList) -> Optional[int]:
-        """
-        Extract limit clause from SQL statement.
-
-        :param statement: SQL statement
-        :return: Limit extracted from query, None if no limit present in statement
-        """
+    def _extract_limit_from_query(self, statement):
         idx, _ = statement.token_next_by(m=(Keyword, "LIMIT"))
         if idx is not None:
             _, token = statement.token_next(idx=idx)
@@ -202,16 +188,10 @@ class ParsedQuery(object):
                     _, token = token.token_next(idx=idx)
                 if token and token.ttype == sqlparse.tokens.Literal.Number.Integer:
                     return int(token.value)
-        return None
 
-    def get_query_with_new_limit(self, new_limit: int) -> str:
-        """
-        returns the query with the specified limit.
-        Does not change the underlying query
-
-        :param new_limit: Limit to be incorporated into returned query
-        :return: The original query with new limit
-        """
+    def get_query_with_new_limit(self, new_limit):
+        """returns the query with the specified limit"""
+        """does not change the underlying query"""
         if not self._limit:
             return f"{self.stripped()}\nLIMIT {new_limit}"
         limit_pos = None

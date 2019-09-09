@@ -36,7 +36,7 @@ class QueryAutoRefresh extends React.PureComponent {
       offline: props.offline,
     };
   }
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.startTimer();
   }
   componentDidUpdate(prevProps) {

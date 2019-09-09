@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 # pylint: disable=C,R,W
-from datetime import datetime
-
 from superset.db_engine_specs.base import BaseEngineSpec
 
 
@@ -40,7 +38,7 @@ class AthenaEngineSpec(BaseEngineSpec):
     }
 
     @classmethod
-    def convert_dttm(cls, target_type: str, dttm: datetime) -> str:
+    def convert_dttm(cls, target_type, dttm):
         tt = target_type.upper()
         if tt == "DATE":
             return "from_iso8601_date('{}')".format(dttm.isoformat()[:10])
@@ -49,15 +47,14 @@ class AthenaEngineSpec(BaseEngineSpec):
         return "CAST ('{}' AS TIMESTAMP)".format(dttm.strftime("%Y-%m-%d %H:%M:%S"))
 
     @classmethod
-    def epoch_to_dttm(cls) -> str:
+    def epoch_to_dttm(cls):
         return "from_unixtime({col})"
 
     @staticmethod
-    def _mutate_label(label: str) -> str:
+    def mutate_label(label):
         """
         Athena only supports lowercase column names and aliases.
-
-        :param label: Expected expression label
-        :return: Conditionally mutated label
+        :param str label: Original label which might include uppercase letters
+        :return: String that is supported by the database
         """
         return label.lower()

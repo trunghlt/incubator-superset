@@ -172,7 +172,9 @@ class Chart extends React.PureComponent {
             />
           )}
           <div className={`slice_container ${isFaded ? ' faded' : ''}`}>
-            <ChartRenderer {...this.props} />
+            <ChartRenderer
+              {...this.props}
+            />
           </div>
         </div>
       </ErrorBoundary>

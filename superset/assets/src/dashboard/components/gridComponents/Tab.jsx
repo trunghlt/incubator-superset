@@ -54,7 +54,6 @@ const propTypes = {
   handleComponentDrop: PropTypes.func.isRequired,
   deleteComponent: PropTypes.func.isRequired,
   updateComponents: PropTypes.func.isRequired,
-  setDirectPathToChild: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -78,15 +77,10 @@ export default class Tab extends React.PureComponent {
     this.handleDeleteComponent = this.handleDeleteComponent.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.handleTopDropTargetDrop = this.handleTopDropTargetDrop.bind(this);
-    this.handleChangeTab = this.handleChangeTab.bind(this);
   }
 
   handleChangeFocus(nextFocus) {
     this.setState(() => ({ isFocused: nextFocus }));
-  }
-
-  handleChangeTab({ pathToTabIndex }) {
-    this.props.setDirectPathToChild(pathToTabIndex);
   }
 
   handleChangeText(nextTabText) {
@@ -177,7 +171,6 @@ export default class Tab extends React.PureComponent {
             onResize={onResize}
             onResizeStop={onResizeStop}
             isComponentVisible={isComponentVisible}
-            onChangeTab={this.handleChangeTab}
           />
         ))}
         {/* Make bottom of tab droppable */}

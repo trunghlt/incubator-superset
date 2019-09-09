@@ -20,8 +20,8 @@ export default {
   id: 1234,
   slug: 'dashboardSlug',
   metadata: {
-    filterImmuneSlices: [],
-    filterImmuneSliceFields: {},
+    filter_immune_slices: [],
+    filter_immune_slice_fields: {},
   },
   userId: 'mock_user_id',
   dash_edit_perm: true,
