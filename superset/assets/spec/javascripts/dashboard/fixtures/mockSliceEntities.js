@@ -16,11 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { sliceId as id } from './mockChartQueries';
 import { datasourceId } from '../../../fixtures/mockDatasource';
-import { sliceId } from './mockChartQueries';
 
-export const filterId = 127;
-export const column = 'region';
+export const sliceId = id;
 
 export const sliceEntitiesForChart = {
   slices: {
@@ -50,8 +49,6 @@ export const sliceEntitiesForChart = {
       datasource: datasourceId,
       description: null,
       description_markeddown: '',
-      modified: '23 hours ago',
-      changed_on: 1529453332615,
     },
   },
   isLoading: false,
@@ -61,23 +58,11 @@ export const sliceEntitiesForChart = {
 
 export const sliceEntitiesForDashboard = {
   slices: {
-    [filterId]: {
-      slice_id: filterId,
+    127: {
+      slice_id: 127,
       slice_url: '/superset/explore/?form_data=%7B%22slice_id%22%3A%20127%7D',
       slice_name: 'Region Filter',
-      form_data: {
-        instant_filtering: true,
-        filter_configs: [
-          {
-            asc: true,
-            clearable: true,
-            column,
-            key: 'JknLrSlNL',
-            multiple: true,
-            label: column,
-          },
-        ],
-      },
+      form_data: {},
       edit_url: '/chart/edit/127',
       viz_type: 'filter_box',
       datasource: '2__table',

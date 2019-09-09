@@ -65,7 +65,6 @@ setup(
     zip_safe=False,
     scripts=["superset/bin/superset"],
     install_requires=[
-        "backoff>=1.8.0",
         "bleach>=3.0.2, <4.0.0",
         "celery>=4.3.0, <5.0.0",
         "click>=6.0, <7.0.0",  # `click`>=7 forces "-" instead of "_"
@@ -83,9 +82,9 @@ setup(
         "geopy",
         "gunicorn<19.9.0",  # deprecated
         "humanize",
+        "idna",
         "isodate",
         "markdown>=3.0",
-        "msgpack>=0.6.1, <0.7.0",
         "pandas>=0.24.2, <0.25.0",
         "parsedatetime",
         "pathlib2",
@@ -93,7 +92,6 @@ setup(
         "python-dateutil",
         "python-dotenv",
         "python-geohash",
-        "pyarrow>=0.14.1, <0.15.0",
         "pyyaml>=5.1",
         "retry>=0.9.2",
         "selenium>=3.141.0",
@@ -113,7 +111,6 @@ setup(
         "presto": ["pyhive[presto]>=0.4.0"],
         "druid": ["pydruid==0.5.2", "requests==2.22.0"],
     },
-    python_requires="~=3.6",
     author="Apache Software Foundation",
     author_email="dev@superset.incubator.apache.org",
     url="https://superset.apache.org/",

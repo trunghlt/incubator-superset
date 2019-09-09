@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 # pylint: disable=C,R,W
-from datetime import datetime
-
 from superset.db_engine_specs.base import BaseEngineSpec
 
 
@@ -40,7 +38,7 @@ class KylinEngineSpec(BaseEngineSpec):
     }
 
     @classmethod
-    def convert_dttm(cls, target_type: str, dttm: datetime) -> str:
+    def convert_dttm(cls, target_type, dttm):
         tt = target_type.upper()
         if tt == "DATE":
             return "CAST('{}' AS DATE)".format(dttm.isoformat()[:10])

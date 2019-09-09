@@ -15,12 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 # pylint: disable=C,R,W
-from datetime import datetime
 import re
-from typing import List, Optional, Tuple
 
-from sqlalchemy.engine.interfaces import Dialect
-from sqlalchemy.types import String, TypeEngine, UnicodeText
+from sqlalchemy.types import String, UnicodeText
 
 from superset.db_engine_specs.base import BaseEngineSpec, LimitMethod
 
@@ -48,12 +45,12 @@ class MssqlEngineSpec(BaseEngineSpec):
     }
 
     @classmethod
-    def convert_dttm(cls, target_type: str, dttm: datetime) -> str:
+    def convert_dttm(cls, target_type, dttm):
         return "CONVERT(DATETIME, '{}', 126)".format(dttm.isoformat())
 
     @classmethod
-    def fetch_data(cls, cursor, limit: int) -> List[Tuple]:
-        data = super().fetch_data(cursor, limit)
+    def fetch_data(cls, cursor, limit):
+        data = super(MssqlEngineSpec, cls).fetch_data(cursor, limit)
         if data and type(data[0]).__name__ == "Row":
             data = [[elem for elem in r] for r in data]
         return data
@@ -64,16 +61,14 @@ class MssqlEngineSpec(BaseEngineSpec):
     ]
 
     @classmethod
-    def get_sqla_column_type(cls, type_: str) -> Optional[TypeEngine]:
+    def get_sqla_column_type(cls, type_):
         for sqla_type, regex in cls.column_types:
             if regex.match(type_):
                 return sqla_type
         return None
 
     @classmethod
-    def column_datatype_to_string(
-        cls, sqla_column_type: TypeEngine, dialect: Dialect
-    ) -> str:
+    def column_datatype_to_string(cls, sqla_column_type, dialect):
         datatype = super().column_datatype_to_string(sqla_column_type, dialect)
         # MSSQL returns long overflowing datatype
         # as in 'VARCHAR(255) COLLATE SQL_LATIN1_GENERAL_CP1_CI_AS'

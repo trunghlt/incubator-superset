@@ -28,19 +28,6 @@ describe('AnchorLink', () => {
     anchorLinkId: 'CHART-123',
   };
 
-  beforeEach(() => {
-    global.window = Object.create(window);
-    Object.defineProperty(window, 'location', {
-      value: {
-        hash: '#' + props.anchorLinkId,
-      },
-    });
-  });
-
-  afterEach(() => {
-    delete global.window.location.value;
-  });
-
   it('should scroll the AnchorLink into view upon mount', () => {
     const callback = sinon.spy();
     const clock = sinon.useFakeTimers();
@@ -48,7 +35,11 @@ describe('AnchorLink', () => {
       scrollIntoView: callback,
     });
 
-    shallow(<AnchorLink {...props} />);
+    const wrapper = shallow(<AnchorLink {...props} />);
+    wrapper.instance().getLocationHash = () => (props.anchorLinkId);
+    wrapper.update();
+
+    wrapper.instance().componentDidMount();
     clock.tick(2000);
     expect(callback.callCount).toEqual(1);
     stub.restore();

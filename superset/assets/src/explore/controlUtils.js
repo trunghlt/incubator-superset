@@ -44,8 +44,17 @@ export function validateControl(control) {
   return control;
 }
 
-function isGlobalControl(controlKey) {
-  return controlKey in controls;
+export function getControlKeys(vizType, datasourceType) {
+  const controlKeys = [];
+  sectionsToRender(vizType, datasourceType).forEach(
+    section => section.controlSetRows.forEach(
+      fieldsetRow => fieldsetRow.forEach(
+        (field) => {
+          if (typeof field === 'string') {
+            controlKeys.push(field);
+          }
+        })));
+  return controlKeys;
 }
 
 export function getControlConfig(controlKey, vizType) {
@@ -53,28 +62,11 @@ export function getControlConfig(controlKey, vizType) {
   // the mapStatetoProps
   const vizConf = controlPanelConfigs[vizType] || {};
   const controlOverrides = vizConf.controlOverrides || {};
-
-  if (!isGlobalControl(controlKey)) {
-    for (const section of vizConf.controlPanelSections) {
-      for (const controlArr of section.controlSetRows) {
-        for (const control of controlArr) {
-          if (control != null && typeof control === 'object') {
-            if (control.config && control.name === controlKey) {
-              return {
-                ...control.config,
-                ...controlOverrides[controlKey],
-              };
-            }
-          }
-        }
-      }
-    }
-  }
-
-  return {
+  const control = {
     ...controls[controlKey],
     ...controlOverrides[controlKey],
   };
+  return control;
 }
 
 export function applyMapStateToPropsToControl(control, state) {
@@ -129,23 +121,4 @@ export function getControlState(controlKey, vizType, state, value) {
   controlState.value = controlValue === undefined ? controlState.default : controlValue;
   controlState = handleMissingChoice(controlKey, controlState);
   return validateControl(controlState);
-}
-
-export function getAllControlsState(vizType, datasourceType, state, formData) {
-  const controlsState = {};
-  sectionsToRender(vizType, datasourceType).forEach(
-    section => section.controlSetRows.forEach(
-      fieldsetRow => fieldsetRow.forEach((field) => {
-        if (typeof field === 'string') {
-          controlsState[field] = getControlState(field, vizType, state, formData[field]);
-        } else if (field != null && typeof field === 'object') {
-          if (field.config && field.name) {
-            controlsState[field.name] = { ...field.config };
-          }
-        }
-      }),
-    ),
-  );
-
-  return controlsState;
 }

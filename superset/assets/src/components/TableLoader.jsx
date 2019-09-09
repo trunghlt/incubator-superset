@@ -45,7 +45,7 @@ class TableLoader extends React.PureComponent {
     };
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     const { dataEndpoint, mutator } = this.props;
 
     SupersetClient.get({ endpoint: dataEndpoint })

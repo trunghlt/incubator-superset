@@ -16,21 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-const NOOP = () => {};
-
 export default function transformProps(chartProps) {
   const {
     width,
     height,
     rawFormData,
-    queryData,
-    hooks,
+    payload,
+    setControlValue,
+    onAddFilter,
+    setTooltip,
   } = chartProps;
-  const { onAddFilter = NOOP, setControlValue = NOOP, setTooltip = NOOP } = hooks;
 
   return {
     formData: rawFormData,
-    payload: queryData,
+    payload,
     setControlValue,
     viewport: {
       ...rawFormData.viewport,

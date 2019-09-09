@@ -43,7 +43,7 @@ export default class Timer extends React.PureComponent {
     };
     this.stopwatch = this.stopwatch.bind(this);
   }
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.startTimer();
   }
   componentWillUnmount() {

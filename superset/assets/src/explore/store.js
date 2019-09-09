@@ -18,7 +18,8 @@
  */
 /* eslint camelcase: 0 */
 import {
-  getAllControlsState,
+  getControlState,
+  getControlKeys,
   getFormDataFromControls,
 } from './controlUtils';
 import controls from './controls';
@@ -49,41 +50,36 @@ export function getControlsState(state, inputFormData) {
 
   handleDeprecatedControls(formData);
 
-  const controlsState = getAllControlsState(
-    vizType,
-    state.datasource.type,
-    state,
-    formData,
-  );
+  const controlNames = getControlKeys(vizType, state.datasource.type);
 
   const viz = controlPanelConfigs[vizType] || {};
+  const controlsState = {};
+
+  controlNames.forEach((k) => {
+    const control = getControlState(k, vizType, state, formData[k]);
+    controlsState[k] = control;
+    formData[k] = control.value;
+  });
+
   if (viz.onInit) {
     return viz.onInit(controlsState);
   }
-
   return controlsState;
 }
 
 export function applyDefaultFormData(inputFormData) {
   const datasourceType = inputFormData.datasource.split('__')[1];
   const vizType = inputFormData.viz_type;
-  const controlsState =
-    getAllControlsState(
-      vizType,
-      datasourceType,
-      null,
-      { ...inputFormData },
-    );
+  const controlNames = getControlKeys(vizType, datasourceType);
   const formData = {};
-
-  Object.keys(controlsState).forEach((controlName) => {
-    if (inputFormData[controlName] === undefined) {
-      formData[controlName] = controlsState[controlName].value;
+  controlNames.forEach((k) => {
+    const controlState = getControlState(k, vizType, null, inputFormData[k]);
+    if (inputFormData[k] === undefined) {
+      formData[k] = controlState.value;
     } else {
-      formData[controlName] = inputFormData[controlName];
+      formData[k] = inputFormData[k];
     }
   });
-
   return formData;
 }
 

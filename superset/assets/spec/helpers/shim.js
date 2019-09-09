@@ -17,8 +17,7 @@
  * under the License.
  */
 /* eslint no-native-reassign: 0 */
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+import '@babel/polyfill';
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
 import jsdom from 'jsdom';
 import { configure } from 'enzyme';

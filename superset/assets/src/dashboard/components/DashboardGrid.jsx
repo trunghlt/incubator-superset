@@ -32,7 +32,6 @@ const propTypes = {
   handleComponentDrop: PropTypes.func.isRequired,
   isComponentVisible: PropTypes.bool.isRequired,
   resizeComponent: PropTypes.func.isRequired,
-  setDirectPathToChild: PropTypes.func.isRequired,
   width: PropTypes.number.isRequired,
 };
 
@@ -52,7 +51,6 @@ class DashboardGrid extends React.PureComponent {
     this.handleTopDropTargetDrop = this.handleTopDropTargetDrop.bind(this);
     this.getRowGuidePosition = this.getRowGuidePosition.bind(this);
     this.setGridRef = this.setGridRef.bind(this);
-    this.handleChangeTab = this.handleChangeTab.bind(this);
   }
 
   getRowGuidePosition(resizeRef) {
@@ -110,10 +108,6 @@ class DashboardGrid extends React.PureComponent {
     }
   }
 
-  handleChangeTab({ pathToTabIndex }) {
-    this.props.setDirectPathToChild(pathToTabIndex);
-  }
-
   render() {
     const {
       gridComponent,
@@ -166,7 +160,6 @@ class DashboardGrid extends React.PureComponent {
               onResizeStart={this.handleResizeStart}
               onResize={this.handleResize}
               onResizeStop={this.handleResizeStop}
-              onChangeTab={this.handleChangeTab}
             />
           ))}
 

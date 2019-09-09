@@ -123,7 +123,7 @@ class Header extends React.PureComponent {
     this.props.startPeriodicRender(refreshFrequency * 1000);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (
       UNDO_LIMIT - nextProps.undoLength <= 0 &&
       !this.state.didNotifyMaxUndoHistoryToast

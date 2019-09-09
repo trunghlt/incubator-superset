@@ -96,7 +96,7 @@ export default class AdhocFilterEditPopoverSimpleTabContent extends React.Compon
     };
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.refreshComparatorSuggestions();
   }
 

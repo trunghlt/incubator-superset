@@ -17,8 +17,6 @@
  * under the License.
  */
  {
-  "sourceMaps": true,
-  "retainLines": true,
   "presets" : ["airbnb", "@babel/preset-react", "@babel/preset-env"],
   "plugins": ["lodash", "@babel/plugin-syntax-dynamic-import", "react-hot-loader/babel"],
   "env": {

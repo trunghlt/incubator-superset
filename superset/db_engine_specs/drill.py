@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 # pylint: disable=C,R,W
-from datetime import datetime
 from urllib import parse
 
 from superset.db_engine_specs.base import BaseEngineSpec
@@ -42,15 +41,15 @@ class DrillEngineSpec(BaseEngineSpec):
 
     # Returns a function to convert a Unix timestamp in milliseconds to a date
     @classmethod
-    def epoch_to_dttm(cls) -> str:
+    def epoch_to_dttm(cls):
         return cls.epoch_ms_to_dttm().replace("{col}", "({col}*1000)")
 
     @classmethod
-    def epoch_ms_to_dttm(cls) -> str:
+    def epoch_ms_to_dttm(cls):
         return "TO_DATE({col})"
 
     @classmethod
-    def convert_dttm(cls, target_type: str, dttm: datetime) -> str:
+    def convert_dttm(cls, target_type, dttm):
         tt = target_type.upper()
         if tt == "DATE":
             return "CAST('{}' AS DATE)".format(dttm.isoformat()[:10])

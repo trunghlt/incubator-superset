@@ -52,6 +52,7 @@ describe('Header', () => {
     setEditMode: () => {},
     showBuilderPane: () => {},
     builderPaneType: BUILDER_PANE_TYPE.NONE,
+    toggleBuilderPane: () => {},
     updateCss: () => {},
     hasUnsavedChanges: false,
     maxUndoHistoryExceeded: false,

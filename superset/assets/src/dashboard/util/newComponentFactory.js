@@ -57,12 +57,11 @@ function uuid(type) {
   return `${type}-${shortid.generate()}`;
 }
 
-export default function entityFactory(type, meta, parents = []) {
+export default function entityFactory(type, meta) {
   return {
     type,
     id: uuid(type),
     children: [],
-    parents,
     meta: {
       ...typeToDefaultMetaData[type],
       ...meta,
