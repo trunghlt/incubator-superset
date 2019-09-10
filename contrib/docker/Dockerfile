@@ -20,7 +20,8 @@ RUN useradd --user-group --create-home --no-log-init --shell /bin/bash superset
 
 # Configure environment
 ENV LANG=C.UTF-8 \
-    LC_ALL=C.UTF-8
+    LC_ALL=C.UTF-8 \
+    PYTHONPATH=/etc/superset:/home:$PYTHONPATH
 
 RUN apt-get update -y
 
