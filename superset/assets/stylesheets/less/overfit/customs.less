@@ -132,3 +132,52 @@
     }
   }
 }
+
+.navbar_v1 {
+  padding: 5px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h6 {
+    margin: 0;
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  .navbar-logo {
+    font-size: 32px;
+    font-weight: 700;
+
+    &:hover {
+      text-decoration: none;
+      color: @brand-primary;
+    }
+  }
+
+  .navbar_right {
+    text-align: end;
+
+    .dropdown-toggle {
+      font-size: 16px;
+      font-weight: 700;
+      color: @kbd-bg;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    .dropdown-menu {
+      left: -50px !important;
+      min-width: 130px;
+      text-align: right;
+    }
+  }
+
+  .menu-unfold svg {
+    cursor: pointer;
+  }
+}

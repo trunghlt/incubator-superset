@@ -17,31 +17,33 @@
   under the License.
 #}
 {% set menu = appbuilder.menu %}
-{% set languages = appbuilder.languages %}
-{% set WARNING_MSG = appbuilder.app.config.get('WARNING_MSG') %}
-{% set app_icon_width = appbuilder.app.config.get('APP_ICON_WIDTH', 40) %}
 {% set logo_target_path = appbuilder.app.config.get('LOGO_TARGET_PATH') or '/profile/{}/'.format(current_user.username) %}
 
 <div class="navbar navbar-static-top {{menu.extra_classes}} mt-0" role="navigation">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="{{ '/superset' + logo_target_path if current_user.username is defined else '#' }}">
-        <img
-          width="{{ app_icon_width }}"
-          src="{{ appbuilder.app_icon }}"
-          alt="{{ appbuilder.app_name }}"
-        />
-      </a>
+  <div class="navbar_v1">
+    <div class="menu-unfold">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path fill="#9DA4A8" fill-rule="nonzero" d="M22 0H2a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm-4.5 17h-11a1 1 0 0 1 0-2h11a1 1 0 0 1 0 2zm0-4h-11a1 1 0 0 1 0-2h11a1 1 0 0 1 0 2zm0-4h-11a1 1 0 1 1 0-2h11a1 1 0 0 1 0 2z"/>
+      </svg>
     </div>
-    <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav navbar-right">
-        {% include 'appbuilder/navbar_right.html' %}
-      </ul>
+    <div class="logo">
+      <a class="navbar-logo" href="{{ '/superset' + logo_target_path if current_user.username is defined else '#' }}">{{ appbuilder.app_name }}</a>
+    </div>
+    <div class="navbar_right">
+      <li class="dropdown">
+        <a
+          class="dropdown-toggle"
+          data-toggle="dropdown"
+          href="javascript:void(0)"
+        >
+        {{g.user.get_full_name()}}
+        </a>
+          <ul class="dropdown-menu">
+              <li><a href="{{appbuilder.get_url_for_userinfo}}">{{_("Profile")}}</a></li>
+              <li><a href="{{appbuilder.get_url_for_logout}}">{{_("Logout")}}</a></li>
+          </ul>
+      </li>
+      <h6>{{ current_user.roles }}</h6>
     </div>
   </div>
 </div>
