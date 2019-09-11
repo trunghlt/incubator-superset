@@ -107,7 +107,7 @@ jobs:
           at: /tmp/workspace
       - add_ssh_keys:
           fingerprints:
-            - "ba:ff:a5:77:9b:87:41:be:09:28:1e:b0:5e:d2:12:5c"
+            - "b8:c5:23:ed:2d:c1:38:0a:a4:3e:32:a7:db:b1:c8:c8"
       - run:
           name: pull ProjectStrand repo
           command: |
