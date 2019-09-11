@@ -110,6 +110,10 @@ jobs:
         description: "Namespace to deploy to"
         default: "nightly"
         type: string
+      branch:
+        description: "Branch to build superset image from"
+        default: "dev"
+        type: string
     steps:
       - checkout
       - attach_workspace:
@@ -160,4 +164,5 @@ workflows:
       - deploy_superset:
           requires:
             - build_image
+          namespace: test
       - test_deployer
