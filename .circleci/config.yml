@@ -158,6 +158,6 @@ workflows:
     jobs:
       - build_image
       - deploy_superset:
-        requires:
-          - build_image
+          requires:
+            - build_image
       - test_deployer
