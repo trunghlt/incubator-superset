@@ -20,7 +20,8 @@ RUN useradd --user-group --create-home --no-log-init --shell /bin/bash superset
 
 # Configure environment
 ENV LANG=C.UTF-8 \
-    LC_ALL=C.UTF-8
+    LC_ALL=C.UTF-8 \
+    PYTHONPATH=/etc/superset:/home:$PYTHONPATH
 
 RUN apt-get update -y
 
@@ -50,6 +51,8 @@ COPY contrib/docker/requirements-extra.txt .
 RUN pip install --upgrade setuptools pip \
     && pip install -r requirements.txt -r requirements-dev.txt -r requirements-extra.txt \
     && rm -rf /root/.cache/pip
+
+RUN git clone https://github.com/JohnOmernik/sqlalchemy-drill && cd sqlalchemy-drill && python3 setup.py install
 
 COPY --chown=superset:superset superset superset
 
