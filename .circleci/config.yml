@@ -1,5 +1,29 @@
 ---
 version: 2.1
+executors:
+  google-cloud-sdk:
+    docker:
+      - image: $GCR_HOSTNAME/$GCR_PROJECT_ID/google-cloud-sdk:latest
+        auth:
+          username: _json_key
+          password: $GCR_PASSWORD
+commands:
+  setup_docker:
+    description: "Setup and authenticate Docker"
+    steps:
+      - setup_remote_docker:
+          version: 17.12.0-ce
+      - init_gcloud
+      - run:
+          name: configure docker
+          command: gcloud auth configure-docker --quiet
+  setup_kubectl:
+    description: "Authenticate kubectl"
+    steps:
+      - init_gcloud
+      - run:
+          name: configure gcloud
+          command: gcloud container clusters get-credentials overfit
 jobs:
   build_image:
     docker:
@@ -50,9 +74,137 @@ jobs:
           key: docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
           paths:
             - /tmp/docker-caches
-
+  test_deployer:
+    executor: google-cloud-sdk
+    steps:
+      - setup_kubectl
+      - checkout
+      - run:
+        name: copy nesscessary file
+        command: |
+          IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-deployer-integrationtests:dev
+          docker run --name deployer_integrationtests $IMAGE pwd
+          docker cp deployer_integrationtests:/usr/local/bin/deployer.integrationtests /tmp/workspace
+      - run:
+          name: Start port forwarding to service deployer
+          command: kubectl port-forward -n test svc/deployer 54421:80
+          background: true
+      - run:
+          name: Test deployer
+          command: |
+            DEPLOYER_ADDR=localhost:54421 /tmp/workspace/deployer.integrationtests
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - imagenames
+            - deployer.integrationtests
+  build_superset_image:
+    executor: google-cloud-sdk
+    working_directory: /superset
+    parameters:
+      branch:
+        description: "Branch to build superset image from"
+        default: "dev"
+        type: string
+    steps:
+      - setup_docker
+      - checkout
+      - restore_cache:
+          keys:
+            - superset-docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
+            - superset-docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}
+            - superset-docker-layers-{{ checksum "contrib/docker/Dockerfile" }}
+            - superset-docker-layers-
+      - run:
+          name: Load Docker layer cache
+          command: |
+            # credits to: https://blog.jondh.me.uk/2018/04/strategies-for-docker-layer-caching-in-circleci/
+            set +o pipefail
+            if [ -f /tmp/docker-caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ]; then
+              gunzip -c /tmp/docker-caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load;
+              docker images;
+            fi
+      - run:
+          name: build & push superset image
+          command: |
+            IMAGE_REPO=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-superset
+            IMAGE_TAG=dev
+            mkdir -p /tmp/workspace/imagenames
+            echo $IMAGE_REPO > /tmp/workspace/imagenames/superset.repo
+            echo $IMAGE_TAG > /tmp/workspace/imagenames/superset.tag
+            IMAGE=$IMAGE_REPO:$IMAGE_TAG
+            docker build -t $IMAGE -f contrib/docker/Dockerfile .
+            docker push $IMAGE
+      - run:
+          name: Save Docker layer cache
+          command: |
+            IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-superset:build-$CIRCLE_BUILD_NUM
+            mkdir -p /tmp/docker-caches
+            docker history -q $IMAGE | sed '/<missing>/d' >> /tmp/dockerlayers.txt
+            docker save $(cat /tmp/dockerlayers.txt) | gzip > /tmp/docker-caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
+      - save_cache:
+          key: superset-docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
+          paths:
+            - /tmp/docker-caches
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - imagenames
+  deploy_superset:
+    machine:
+      image: circleci/classic:201808-01
+    parameters:
+      namespace:
+        description: "Namespace to deploy to"
+        default: "nightly"
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - add_ssh_keys:
+          fingerprints:
+            - "ba:ff:a5:77:9b:87:41:be:09:28:1e:b0:5e:d2:12:5c"
+      - run:
+          name: pull ProjectStrand repo
+          command: |
+            mkdir /ProjectStrand
+            echo 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==' >> ~/.ssh/known_hosts
+            git clone git@github.com:trunghlt/ProjectStrand.git --branch << parameters.branch >> --quiet --single-branch /ProjectStrand
+      - run:
+          name: port-forward deployer
+          background: true
+          command: |
+            echo "$GCR_PASSWORD" | docker login --username _json_key --password-stdin https://us.gcr.io
+            echo "$GCR_PASSWORD" | docker login --username _json_key --password-stdin https://gcr.io
+            env > host.env
+            docker run --rm --env-file=host.env --network=host $GCR_HOSTNAME/$GCR_PROJECT_ID/google-cloud-sdk:latest /bin/bash -c \
+            'echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=- && \
+            gcloud --quiet config set project $GOOGLE_PROJECT_ID && \
+            gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE && \
+            gcloud container clusters get-credentials overfit && \
+            kubectl port-forward -n << parameters.namespace >> --address 0.0.0.0 svc/deployer 54321:80'
+      - run:
+          name: Update image
+          command: |
+            echo "$GCR_PASSWORD" | docker login --username _json_key --password-stdin https://us.gcr.io
+            echo "$GCR_PASSWORD" | docker login --username _json_key --password-stdin https://gcr.io
+            for i in $(seq 1 10); do
+              sleep 15
+              docker run --rm --network=host -v /ProjectStrand/internal/pkg/deployerpb/deployer.proto:/proto/deployer.proto \
+              -v /tmp/workspace:/tmp/workspace -w /proto $GCR_HOSTNAME/$GCR_PROJECT_ID/grpc_cli:latest \
+              /grpc_cli call localhost:54321 --protofiles=deployer.proto "overfit.deployer.v1.Deployer.UpdateDeploymentImage" \
+              "image: {repo: '$(cat /tmp/workspace/imagenames/superset.repo)', tag: '$(cat /tmp/workspace/imagenames/superset.tag)'}" && s=0 && break
+              s=$?
+            done
+            exit $s
 workflows:
   version: 2
   test:
     jobs:
       - build_image
+      - build_superset_image
+      - deploy_superset:
+        requires:
+          - build_superset_image
+      - test_deployer
