@@ -80,7 +80,7 @@ jobs:
       - setup_kubectl
       - checkout
       - run:
-        name: copy nesscessary file
+        name: copy integrationtests file
         command: |
           IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-deployer-integrationtests:dev
           docker run --name deployer_integrationtests $IMAGE pwd
@@ -93,63 +93,6 @@ jobs:
           name: Test deployer
           command: |
             DEPLOYER_ADDR=localhost:54421 /tmp/workspace/deployer.integrationtests
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - imagenames
-            - deployer.integrationtests
-  build_superset_image:
-    executor: google-cloud-sdk
-    working_directory: /superset
-    parameters:
-      branch:
-        description: "Branch to build superset image from"
-        default: "dev"
-        type: string
-    steps:
-      - setup_docker
-      - checkout
-      - restore_cache:
-          keys:
-            - superset-docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
-            - superset-docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}
-            - superset-docker-layers-{{ checksum "contrib/docker/Dockerfile" }}
-            - superset-docker-layers-
-      - run:
-          name: Load Docker layer cache
-          command: |
-            # credits to: https://blog.jondh.me.uk/2018/04/strategies-for-docker-layer-caching-in-circleci/
-            set +o pipefail
-            if [ -f /tmp/docker-caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ]; then
-              gunzip -c /tmp/docker-caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load;
-              docker images;
-            fi
-      - run:
-          name: build & push superset image
-          command: |
-            IMAGE_REPO=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-superset
-            IMAGE_TAG=dev
-            mkdir -p /tmp/workspace/imagenames
-            echo $IMAGE_REPO > /tmp/workspace/imagenames/superset.repo
-            echo $IMAGE_TAG > /tmp/workspace/imagenames/superset.tag
-            IMAGE=$IMAGE_REPO:$IMAGE_TAG
-            docker build -t $IMAGE -f contrib/docker/Dockerfile .
-            docker push $IMAGE
-      - run:
-          name: Save Docker layer cache
-          command: |
-            IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-superset:build-$CIRCLE_BUILD_NUM
-            mkdir -p /tmp/docker-caches
-            docker history -q $IMAGE | sed '/<missing>/d' >> /tmp/dockerlayers.txt
-            docker save $(cat /tmp/dockerlayers.txt) | gzip > /tmp/docker-caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
-      - save_cache:
-          key: superset-docker-layers-{{ checksum "contrib/docker/Dockerfile" }}-{{ checksum "superset/assets/package-lock.json" }}-{{ checksum "requirements.txt" }}
-          paths:
-            - /tmp/docker-caches
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - imagenames
   deploy_superset:
     machine:
       image: circleci/classic:201808-01
@@ -189,12 +132,14 @@ jobs:
           command: |
             echo "$GCR_PASSWORD" | docker login --username _json_key --password-stdin https://us.gcr.io
             echo "$GCR_PASSWORD" | docker login --username _json_key --password-stdin https://gcr.io
+            IMAGE_REPO=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-superset
+            IMAGE_TAG=build-$CIRCLE_BUILD_NUM
             for i in $(seq 1 10); do
               sleep 15
               docker run --rm --network=host -v /ProjectStrand/internal/pkg/deployerpb/deployer.proto:/proto/deployer.proto \
               -v /tmp/workspace:/tmp/workspace -w /proto $GCR_HOSTNAME/$GCR_PROJECT_ID/grpc_cli:latest \
               /grpc_cli call localhost:54321 --protofiles=deployer.proto "overfit.deployer.v1.Deployer.UpdateDeploymentImage" \
-              "image: {repo: '$(cat /tmp/workspace/imagenames/superset.repo)', tag: '$(cat /tmp/workspace/imagenames/superset.tag)'}" && s=0 && break
+              "image: {repo: '$IMAGE_REPO', tag: '$IMAGE_TAG'}" && s=0 && break
               s=$?
             done
             exit $s
@@ -203,8 +148,7 @@ workflows:
   test:
     jobs:
       - build_image
-      - build_superset_image
       - deploy_superset:
         requires:
-          - build_superset_image
+          - build_image
       - test_deployer
