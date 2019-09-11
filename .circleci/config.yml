@@ -89,11 +89,11 @@ jobs:
       - setup_kubectl
       - checkout
       - run:
-        name: copy integrationtests file
-        command: |
-          IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-deployer-integrationtests:dev
-          docker run --name deployer_integrationtests $IMAGE pwd
-          docker cp deployer_integrationtests:/usr/local/bin/deployer.integrationtests /tmp/workspace
+          name: copy integrationtests file
+          command: |
+            IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-deployer-integrationtests:dev
+            docker run --name deployer_integrationtests $IMAGE pwd
+            docker cp deployer_integrationtests:/usr/local/bin/deployer.integrationtests /tmp/workspace
       - run:
           name: Start port forwarding to service deployer
           command: kubectl port-forward -n test svc/deployer 54421:80
