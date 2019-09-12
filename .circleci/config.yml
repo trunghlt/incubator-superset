@@ -116,6 +116,7 @@ jobs:
         default: "dev"
         type: string
     steps:
+      - setup_docker
       - checkout
       - attach_workspace:
           at: /tmp/workspace
