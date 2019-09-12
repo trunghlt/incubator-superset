@@ -87,6 +87,7 @@ jobs:
     executor: google-cloud-sdk
     steps:
       - setup_kubectl
+      - setup_docker
       - checkout
       - run:
           name: copy integrationtests file
