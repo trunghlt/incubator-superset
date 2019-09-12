@@ -122,11 +122,11 @@ jobs:
           fingerprints:
             - "b8:c5:23:ed:2d:c1:38:0a:a4:3e:32:a7:db:b1:c8:c8"
       - run:
-          name: pull ProjectStrand repo
+          name: Get deployer.proto file
           command: |
-            mkdir ProjectStrand
-            echo 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==' >> ~/.ssh/known_hosts
-            git clone git@github.com:trunghlt/ProjectStrand.git --branch << parameters.branch >> --quiet --single-branch ProjectStrand
+            - IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-go:latest
+            - docker run --name strand_go $IMAGE pwd
+            - docker cp strand_go:/app/internal/pkg/deployerpb/deployer.proto /tmp/workspace
       - run:
           name: port-forward deployer
           background: true
@@ -149,7 +149,7 @@ jobs:
             IMAGE_TAG=build-$CIRCLE_BUILD_NUM
             for i in $(seq 1 10); do
               sleep 15
-              docker run --rm --network=host -v /ProjectStrand/internal/pkg/deployerpb/deployer.proto:/proto/deployer.proto \
+              docker run --rm --network=host -v /tmp/workspace/deployer.proto:/proto/deployer.proto \
               -v /tmp/workspace:/tmp/workspace -w /proto $GCR_HOSTNAME/$GCR_PROJECT_ID/grpc_cli:latest \
               /grpc_cli call localhost:54321 --protofiles=deployer.proto "overfit.deployer.v1.Deployer.UpdateDeploymentImage" \
               "image: {repo: '$IMAGE_REPO', tag: '$IMAGE_TAG'}" && s=0 && break
