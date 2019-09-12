@@ -8,7 +8,7 @@
   margin-bottom: 0 !important;
 }
 .menu-left {
-  width: 68px;
+  width: 64px;
   padding-right: 0;
   padding-left: 0;
   transition: all .2s;
@@ -88,7 +88,8 @@
   }
 
   li > a {
-    padding: 18px 22px;
+    padding: 18px 21px;
+    display: flex;
   }
 }
 
@@ -207,11 +208,11 @@
 
 .custom-layout {
   display: flex;
-  height: calc(100vh - 61px);
+  min-height: calc(100vh - 61px);
 
   .boby-content {
     padding: 40px;
-    width: calc(100% - 68px);
+    width: calc(100% - 64px);
     background-color: @background-body;
   }
 }
