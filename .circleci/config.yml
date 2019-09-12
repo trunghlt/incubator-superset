@@ -124,9 +124,9 @@ jobs:
       - run:
           name: Get deployer.proto file
           command: |
-            - IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-go:latest
-            - docker run --name strand_go $IMAGE pwd
-            - docker cp strand_go:/app/internal/pkg/deployerpb/deployer.proto /tmp/workspace
+            IMAGE=$GCR_HOSTNAME/$GCR_PROJECT_ID/strand-go:latest
+            docker run --name strand_go $IMAGE pwd
+            docker cp strand_go:/app/internal/pkg/deployerpb/deployer.proto /tmp/workspace
       - run:
           name: port-forward deployer
           background: true
