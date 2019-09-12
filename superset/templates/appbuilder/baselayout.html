@@ -34,11 +34,8 @@
     {% block uncontained %}{% endblock %}
 
     <div class="container-fluid">
-      <div class="row">
-          <div class="col-lg-2 menu-left">
-            <div class="ng-binding">
-              <h1>{{ appbuilder.app_name }}</h1>
-            </div>
+      <div class="row custom-layout">
+          <div class="menu-left">
             <ul class="nav navbar-nav">
               {% if WARNING_MSG %}
                 <li class="alert alert-danger">
@@ -48,7 +45,7 @@
               {% include 'appbuilder/menu.html' %}
             </ul>
           </div>
-          <div class="col-lg-10">
+          <div class="boby-content">
               {% block messages %}
                 {% include 'superset/flash_wrapper.html' %}
               {% endblock %}
@@ -61,15 +58,5 @@
         {% block content_fluid %}
         {% endblock %}
     </div>
-
-    {% block footer %}
-        <footer>
-          <div class="img-rounded nav-fixed-bottom">
-              <div class="container-fluid">
-                  {% include 'appbuilder/footer.html' %}
-              </div>
-          </div>
-        </footer>
-    {% endblock %}
 {% endblock %}
 
