@@ -1,65 +1,124 @@
-{% macro menu_item(item) %}
-    <a tabindex="-1" href="{{item.get_url()}}">
-    {{_(item.label)}}</a>
-{% endmacro %}
-
+{% set menu_array = [] %}
 {% for item1 in menu.get_list() %}
     {% if item1 | is_menu_visible %}
         {% if item1.childs %}
-            <li class="dropdown">
-            <a class="dropdown-toggle">{{_(item1.label)}}</a>
-            <ul class="menu-item">
             {% for item2 in item1.childs %}
                 {% if item2 %}
                     {% if item2.name == '-' %}
                         {% if not loop.last %}
                         {% endif %}
                     {% elif item2 | is_menu_visible %}
-                        <li class="item">{{ menu_item(item2) }}</li>
+                        {% set menu_array = (menu_array.append(item2.get_url()), menu_array) %}
                     {% endif %}
                 {% endif %}
             {% endfor %}
-            </ul>
-          </li>
         {% else %}
-            <li>
-                {{ menu_item(item1) }}
-            </li>
+            {% set menu_array = (menu_array.append(item1.get_url()), menu_array) %}
         {% endif %}
     {% endif %}
 {% endfor %}
 
+{% set table_url = '/tablemodelview/list/?_flt_1_is_sqllab_view=y' %}
+{% if table_url in menu_array %}
+<li>
+    <a href="{{ table_url }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 19">
+            <path fill-rule="evenodd"
+                d="M20 5.833H0v-5C0 .373.373 0 .833 0h18.334c.46 0 .833.373.833.833v5zm-14.167 12.5h-5A.834.834 0 0 1 0 17.5v-10h5.833v10.833zm13.334 0H7.5V7.5H20v10c0 .46-.373.833-.833.833z" />
+        </svg>
+        <span>Tables</span>
+    </a>
+</li>
+{% endif %}
+
+{% set database_url = '/databaseview/list/' %}
+{% if database_url in menu_array %}
+<li>
+    <a href="{{ database_url }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 24">
+            <path fill-rule="evenodd" d="M8.156 21.747V19.76a.982.982 0 0 1 1-.977h.02c.533.01.96.445.958.978v1.986c0 .138.112.25.25.25h7.517a.989.989 0 1 1 0 1.977H1.094a.989.989 0 1 1 0-1.977h6.812a.25.25 0 0 0 .25-.25zm10.628-10.091v2.185c0 2.185-4.206 3.955-9.392 3.955-5.186 0-9.392-1.77-9.392-3.955v-2.185a.25.25 0 0 1 .408-.194c1.916 1.557 5.522 2.379 8.984 2.379 3.462 0 7.068-.822 8.985-2.379a.249.249 0 0 1 .407.194zM9.393 8.898c3.461 0 7.067-.822 8.984-2.378a.249.249 0 0 1 .407.193v2.185c0 2.185-4.206 3.955-9.392 3.955C4.206 12.853 0 11.083 0 8.898V6.712a.25.25 0 0 1 .408-.194c1.916 1.558 5.523 2.38 8.985 2.38zm0-.988C4.206 7.91.001 6.14.001 3.955.001 1.771 4.206 0 9.393 0c5.187 0 9.392 1.77 9.392 3.955 0 2.184-4.205 3.955-9.392 3.955z"/>
+        </svg>
+        <span>Databases</span>
+    </a>
+</li>
+{% endif %}
+
+{% set dashboard_url = '/dashboard/list/' %}
+{% if dashboard_url in menu_array %}
+<li>
+    <a href="{{ dashboard_url }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 24">
+            <path fill-rule="evenodd" d="M.308.293C.505.105.772 0 1.05 0l8.4.015c.58 0 1.05.448 1.05 1v11c0 .552-.47 1-1.05 1h-8.4c-.58 0-1.05-.448-1.05-1V1C0 .735.11.48.308.293zM21.95 0C22.53 0 23 .448 23 1v5.014c0 .552-.47 1-1.05 1h-8.4c-.58 0-1.05-.448-1.05-1v-5c0-.552.47-1 1.05-1L21.95 0zM10.192 22.68a1.008 1.008 0 0 1-.742.333l-8.4-.016c-.58 0-1.05-.512-1.05-1.143v-5.698c0-.631.47-1.143 1.05-1.143h8.4c.58 0 1.05.512 1.05 1.143v5.715c0 .303-.11.594-.308.808zM21.95 10.014c.58 0 1.05.448 1.05 1v10.986c0 .552-.47 1-1.05 1l-8.4.014c-.58 0-1.05-.448-1.05-1v-11c0-.552.47-1 1.05-1h8.4z"/>
+        </svg>
+        <span>Dashboards</span>
+    </a>
+</li>
+{% endif %}
+
+{% set chart_url = '/chart/list/' %}
+{% if chart_url in menu_array %}
+<li>
+    <a href="{{ chart_url }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" d="M23 10.5l-9.04.001a.978.978 0 0 1-.977-.976V.5a.5.5 0 0 1 .5-.5c5.53.007 10.012 4.48 10.018 10a.5.5 0 0 1-.5.5zm.501 1.5a.5.5 0 0 1 .501.5 10.424 10.424 0 0 1-3.08 7.425.501.501 0 0 1-.708 0l-6.73-6.718a.676.676 0 0 1 .5-1.207h9.517zM10.567 24a10.527 10.527 0 0 1-9.135-5.214A10.489 10.489 0 0 1 1.388 8.28a10.526 10.526 0 0 1 9.09-5.29.5.5 0 0 1 .502.5v9.5a.91.91 0 0 0 .207.5l6.73 6.718a.5.5 0 0 1 0 .707A10.35 10.35 0 0 1 10.567 24z"/>
+        </svg>
+        <span>Charts</span>
+    </a>
+</li>
+{% endif %}
+
+{% set user_url = '/users/list/' %}
+{% if user_url in menu_array %}
+<li>
+    <a href="{{ user_url }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21">
+            <path fill-rule="evenodd" d="M8.274 9.928a4.964 4.964 0 1 1 0-9.928 4.964 4.964 0 0 1 0 9.928zm10.323-1.834a3.31 3.31 0 1 1 0-6.62 3.31 3.31 0 0 1 0 6.62zM8.274 12.087a8.274 8.274 0 0 1 8.273 8.273H0a8.274 8.274 0 0 1 8.274-8.273zm5.863.12c.888-.965 2.767-1.525 3.933-1.523 3.275 0 5.93 2.705 5.93 6.043v2.014h-5.851a9.222 9.222 0 0 0-1.153-3.538c-.629-1.112-1.581-2.111-2.859-2.996z"/>
+        </svg>
+        <span>List Users</span>
+    </a>
+</li>
+{% endif %}
+
+{% set sqllab_url = '/superset/sqllab' %}
+{% if sqllab_url in menu_array %}
+<li>
+    <a href="{{ sqllab_url }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 24">
+            <path fill-rule="evenodd" d="M2.25 21.75h17.5v1.5c0 .45-.3.75-.75.75H3c-.45 0-.75-.3-.75-.75v-1.5zM15.5 1.2l4.05 4.05H15.5V1.2zm5.75 8.55c.45 0 .75.3.75.75v9c0 .45-.3.75-.75.75H.75c-.45 0-.75-.3-.75-.75v-9c0-.45.3-.75.75-.75h1.5v-9C2.25.3 2.55 0 3 0h11v6c0 .45.3.75.75.75h5v3h1.5zM6.725 13.325c-.075-.075-.15-.15-.15-.225 0-.075 0-.15.075-.225.075-.075.15-.075.3-.075.3 0 .675.15 1.05.3l.375-.9c-.45-.225-.9-.3-1.35-.3-.525 0-.9.075-1.2.3-.3.225-.45.525-.45.9 0 .225 0 .375.075.525.075.15.225.225.3.375.075.15.3.225.6.375.375.15.525.225.6.3l.15.15c.075.075.075.075.075.15s-.075.15-.15.225c-.075.075-.225.075-.375.075-.225 0-.45 0-.675-.075-.225-.075-.45-.15-.675-.3v1.05c.225.15.375.15.6.225.225.075.45.075.75.075.375 0 .6-.075.9-.15.3-.075.45-.225.6-.45.15-.15.225-.375.225-.675 0-.3-.075-.6-.225-.75a2.141 2.141 0 0 0-.75-.525c-.375-.225-.6-.3-.675-.375zM11.75 17.3v-.15h1.5l-1.05-1.2c.6-.3.9-.975.9-1.95 0-.75-.15-1.275-.525-1.65s-.9-.525-1.575-.525c-.675 0-1.2.225-1.575.6s-.525.9-.525 1.65c0 .75.15 1.275.525 1.65s.9.6 1.575.6l.75.975zm4.875-1.05v-.9h-1.65v-3.375H13.85v4.275h2.775zM11 12.875c.3 0 .525.075.675.3.15.225.225.525.225.975 0 .45-.075.75-.225.975-.15.225-.375.3-.675.3-.6 0-.9-.45-.9-1.275s.3-1.275.9-1.275z"/>
+        </svg>
+        <span>SQL Editor</span>
+    </a>
+</li>
+{% endif %}
+
+{% set setting_url = '/users/userinfo/' %}
+<li>
+    <a href="{{ setting_url }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 24">
+            <path fill-rule="evenodd" d="M20.149 13.453c.082-.48.125-.966.128-1.453a9.033 9.033 0 0 0-.128-1.453l2.1-2.029A1 1 0 0 0 22.42 7.3l-1.5-2.6a1.009 1.009 0 0 0-1.143-.461l-2.8.8a9.017 9.017 0 0 0-2.527-1.451l-.703-2.83a1 1 0 0 0-.97-.758h-3a1 1 0 0 0-.97.758L8.1 3.588a9.017 9.017 0 0 0-2.523 1.451l-2.8-.8a1.01 1.01 0 0 0-1.143.461l-1.5 2.6a1 1 0 0 0 .171 1.219l2.1 2.029c-.082.48-.125.965-.128 1.452.003.487.046.973.128 1.453l-2.1 2.029A1 1 0 0 0 .134 16.7l1.5 2.6a1 1 0 0 0 1.142.462l2.8-.8a9.017 9.017 0 0 0 2.527 1.451l.707 2.83a1 1 0 0 0 .967.757h3a1 1 0 0 0 .97-.758l.707-2.83a9.017 9.017 0 0 0 2.523-1.451l2.8.8a1 1 0 0 0 1.142-.462l1.5-2.6a1 1 0 0 0-.171-1.219l-2.099-2.027zM11.277 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
+        </svg>
+        <span>Settings</span>
+    </a>
+</li>
+
 <script src="/static/appbuilder/js/jquery-latest.js"></script>
 <script>
-    $(document).ready(function() {
-        $('.menu-left a.dropdown-toggle').click(function() {
-            if ($(this).hasClass('menu-active')) {
-                $(this).removeClass('menu-active');
-                $(this).siblings('.menu-item').css('display', 'none');
+    $(document).ready(function () {
+        $('.menu-unfold-button').click(function() {
+            if ($('.menu-left-open').length) {
+                $('.menu-left').removeClass('menu-left-open');
             } else {
-                $('.menu-left a.dropdown-toggle').removeClass('menu-active');
-                $('.menu-left .menu-item').css('display', 'none');
-                $(this).addClass('menu-active');
-                $(this).siblings('.menu-item').css('display', 'block');
+                $('.menu-left').addClass('menu-left-open');
             }
+            
         });
     });
+
     const pathName = window.location.pathname;
-    let element = $(`a[href='${pathName}']`);
+    let element = $(`.menu-left a[href='${pathName}']`);
     if (!element.length) {
         const link = (location.pathname+location.search).substr(0);
-        element = $(`a[href='${link}']`);
+        element = $(`.menu-left a[href='${link}']`);
     }
-    const selector = element.parents('ul.menu-item');
-    console.log(selector);
-    
-    if (selector.length) {
-        selector.css('display', 'block');
-        selector.siblings('a').addClass('menu-active');
-        element.addClass('menu-item-active');
-    } else {
-        if (element.attr('href' !== '/superset/profile/admin/')) {
-            element.addClass('menu-active');
-        }
-    }
+    const selector = element.parents('li').addClass('menu-active');
 </script>
