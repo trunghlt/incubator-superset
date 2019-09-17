@@ -23,9 +23,9 @@
  {{ lib.panel_begin(title) }}
 
     <div class="panel-body list-container">
-    {% block list_search scoped %}
+    <!-- {% block list_search scoped %}
         {{ widgets.get('search')()|safe }}
-    {% endblock %}
+    {% endblock %} -->
 
     {% block list_list scoped %}
         {{ widgets.get('list')()|safe }}

@@ -188,7 +188,7 @@ class SupersetListWidget(ListWidget):
 
 
 class SupersetModelView(ModelView):
-    page_size = 100
+    page_size = 10
     list_widget = SupersetListWidget
 
 

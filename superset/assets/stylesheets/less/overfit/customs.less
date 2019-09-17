@@ -1,3 +1,6 @@
+@max991: ~"(max-width: 991px)";
+@max767: ~"(max-width: 767px)";
+
 .container-fluid {
   width: 100%;
 }
@@ -102,9 +105,6 @@
 }
 #app {
   min-height: calc(100vh - 76px);
-  .SqlLab {
-    top: 15;
-  }
 }
 .p-0 {
   padding: 0 !important;
@@ -143,13 +143,13 @@
     color: @text-grey;
   }
 
-  @media screen and (max-width: 991px) {
+  @media @max991 {
     .frames-cover {
       display: none;
     }
   }
 
-  @media screen and (max-width: 767px) {
+  @media @max767 {
     #loginbox {
       padding: 50px 0;
     }
@@ -172,7 +172,7 @@
 
   .navbar-logo {
     font-size: 32px;
-    font-weight: 700;
+    font-weight: 600;
 
     &:hover {
       text-decoration: none;
@@ -185,7 +185,7 @@
 
     .dropdown-toggle {
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 500;
       color: @kbd-bg;
 
       &:hover {
@@ -194,16 +194,21 @@
     }
 
     .dropdown-menu {
-      left: -50px !important;
-      min-width: 130px;
+      top: 93%;
+      left: -40px !important;
+      min-width: 120px;
       text-align: right;
-      box-shadow: none;
     }
   }
 
   .menu-unfold svg {
     cursor: pointer;
   }
+}
+
+.dropdown-menu {
+  border: 1px solid @border-dropdown;
+  box-shadow: 0 2px 8px @border-dropdown;
 }
 
 .custom-layout {
@@ -254,5 +259,193 @@
 
   svg {
     fill: @icon-active !important;
+  }
+}
+
+.panel-primary {
+  background-color: transparent;
+  box-shadow: none;
+
+  .panel-heading {
+    padding: 0;
+
+    .panel-title {
+      border-bottom: none;
+      font-size: 36px;
+      font-weight: 500;
+      color: @title-color;
+    }
+  }
+}
+
+.list-container {
+  padding: 15px 0;
+
+  .list-add-action {
+    top: -41px !important;
+    right: 0 !important;
+
+    .btn-sm {
+      padding: 10px 30px;
+      font-size: 14px;
+      border-radius: 2px;
+      box-shadow: none;
+    }
+  }
+}
+
+.table-responsive {
+  padding: 0 !important;
+  overflow: inherit;
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0 1px;
+
+  thead {
+    th {
+      border-bottom: 0 !important;
+      padding: 12px 15px !important;
+      font-weight: 400;
+      text-transform: uppercase;
+      color: @text-grey;
+
+      a {
+        font-weight: 400;
+        text-transform: uppercase;
+        color: @text-grey;
+  
+        i.fa {
+          margin-left: 8px;
+        }
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      margin-bottom: 1px;
+      background-color: @row-table-color;
+
+      &:hover {
+        background-color: @row-table-color-hover;
+      }
+
+      td {
+        padding: 15px;
+        border-top: 0;
+        color: @text-table-color;
+      }
+    }
+
+    .success {
+      td {
+        background-color: @row-table-color-active !important;
+      }
+    }
+  }
+
+  .dropdown-toggle {
+    cursor: pointer;
+  }
+
+  .dropdown-menu {
+    min-width: 100px;
+    left: -58px;
+  }
+}
+
+.pagination-container {
+  .pagination {
+    li {
+      margin-right: 10px;
+  
+      &:last-child {
+        margin-right: 0;
+      }
+  
+      a {
+        border: none;
+        border-radius: 2px;
+        color: @text-grey;
+
+        &:hover {
+          background-color: @brand-primary;
+          color: @body-bg;
+        }
+      }
+    }
+  }
+
+  .btn-group {
+    .btn {
+      &:first-child {
+        display: flex;
+      }
+
+      .caret {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+    }
+
+    .dropdown-menu {
+      min-width: 90px;
+    }
+  }
+
+  .open {
+    .dropdown-toggle {
+      &:focus {
+        background-color: @brand-primary;
+        color: @body-bg;
+      }
+
+      .caret {
+        color: @body-bg;
+      }
+    }
+  }
+
+  .active {
+    a {
+      background-color: @brand-primary;
+      color: @body-bg !important;
+    }
+  }
+}
+
+.btn-default {
+  border: none;
+
+  &:hover, &:focus, &:active {
+    background-color: @brand-primary;
+    color: @body-bg;
+
+    .caret {
+      color: @body-bg;
+    }
+  }
+}
+
+.form-actions-container {
+  padding: 0 !important;
+
+  .dropdown-menu {
+    min-width: 130px;
+  }
+}
+
+.open {
+  .dropdown-toggle {
+    &:focus {
+      background-color: @brand-primary !important;
+      color: @body-bg !important;
+    }
+
+    .caret {
+      color: @body-bg;
+    }
   }
 }
