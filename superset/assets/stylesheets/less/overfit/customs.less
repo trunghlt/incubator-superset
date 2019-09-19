@@ -187,6 +187,7 @@
       font-size: 16px;
       font-weight: 500;
       color: @kbd-bg;
+      text-decoration: none;
 
       &:hover {
         text-decoration: none;
@@ -435,17 +436,17 @@
   .dropdown-menu {
     min-width: 130px;
   }
-}
 
-.open {
-  .dropdown-toggle {
-    &:focus {
-      background-color: @brand-primary !important;
-      color: @body-bg !important;
-    }
-
-    .caret {
-      color: @body-bg;
+  .open {
+    .dropdown-toggle {
+      &:focus {
+        background-color: @brand-primary !important;
+        color: @body-bg !important;
+      }
+  
+      .caret {
+        color: @body-bg;
+      }
     }
   }
 }
