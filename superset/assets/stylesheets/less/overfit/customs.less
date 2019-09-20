@@ -450,3 +450,90 @@
     }
   }
 }
+
+.panel-default {
+  .panel-heading {
+    .panel-title {
+      font-size: 20px;
+      font-weight: 500;
+      color: @text-table-color;
+      border-bottom: none;
+
+      a:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.Select-control {
+  border-color: @background-input;
+  border-radius: 2px;
+  background-color: @background-input;
+  box-shadow: none;
+
+  &:hover {
+    box-shadow: none;
+    cursor: pointer;
+  }
+
+  .Select-placeholder {
+    color: @text-grey-light;
+  }
+}
+
+.text-muted {
+  color: @text-grey-light;
+}
+
+.Select:focus {
+  outline: none;
+}
+
+.btn-primary:focus {
+  outline: none;
+  border-color: @btn-primary-active;
+}
+
+.explore-heading {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .chart-title {
+    display: flex;
+    align-items: center;
+    font-size: 36px;
+    font-weight: 500;
+    color: @chart-title;
+  }
+
+  .chart-action {
+    .query-and-save {
+      .btn {
+        padding: 8px 20px;
+        border-radius: 2px;
+        font-size: 14px;
+        color: @body-bg;
+
+        &:last-child {
+          background-color: @brand-primary;
+        }
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      .query {
+        margin-right: 15px;
+        background-color: @btn-run-query;
+      }
+
+      .btn-warning {
+        margin-right: 15px;
+      }
+    }
+  }
+}

@@ -76,52 +76,50 @@ export default class AddSliceContainer extends React.PureComponent {
 
   render() {
     return (
-      <div className="container">
-        <Panel header={<h3>{t('Create a new chart')}</h3>}>
-          <div>
-            <p>{t('Choose a datasource')}</p>
-            <div style={styleSelectWidth}>
-              <Select
-                clearable={false}
-                ignoreAccents={false}
-                name="select-datasource"
-                onChange={this.changeDatasource}
-                options={this.props.datasources}
-                placeholder={t('Choose a datasource')}
-                style={styleSelectWidth}
-                value={this.state.datasourceValue}
-                width={600}
-              />
-            </div>
-            <p className="text-muted">
-              {t(
-                'If the datasource you are looking for is not ' +
-                'available in the list, ' +
-                'follow the instructions on the how to add it on the ')}
-              <a href="https://superset.apache.org/tutorial.html">{t('Superset tutorial')}</a>
-            </p>
-          </div>
-          <br />
-          <div>
-            <p>{t('Choose a visualization type')}</p>
-            <VizTypeControl
-              name="select-vis-type"
-              onChange={this.changeVisType}
-              value={this.state.visType}
+      <Panel header={<h3>{t('Create a new chart')}</h3>}>
+        <div>
+          <p>{t('Choose a datasource')}</p>
+          <div style={styleSelectWidth}>
+            <Select
+              clearable={false}
+              ignoreAccents={false}
+              name="select-datasource"
+              onChange={this.changeDatasource}
+              options={this.props.datasources}
+              placeholder={t('Choose a datasource')}
+              style={styleSelectWidth}
+              value={this.state.datasourceValue}
+              width={600}
             />
           </div>
-          <br />
-          <hr />
-          <Button
-            bsStyle="primary"
-            disabled={this.isBtnDisabled()}
-            onClick={this.gotoSlice}
-          >
-            {t('Create new chart')}
-          </Button>
-          <br /><br />
-        </Panel>
-      </div>
+          <p className="text-muted">
+            {t(
+              'If the datasource you are looking for is not ' +
+              'available in the list, ' +
+              'follow the instructions on the how to add it on the ')}
+            <a href="https://superset.apache.org/tutorial.html">{t('Superset tutorial')}</a>
+          </p>
+        </div>
+        <br />
+        <div>
+          <p>{t('Choose a visualization type')}</p>
+          <VizTypeControl
+            name="select-vis-type"
+            onChange={this.changeVisType}
+            value={this.state.visType}
+          />
+        </div>
+        <br />
+        <hr />
+        <Button
+          bsStyle="primary"
+          disabled={this.isBtnDisabled()}
+          onClick={this.gotoSlice}
+        >
+          {t('Create new chart')}
+        </Button>
+        <br /><br />
+      </Panel>
     );
   }
 }

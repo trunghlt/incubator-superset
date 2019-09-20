@@ -40,19 +40,9 @@ import {
   LOG_ACTIONS_MOUNT_EXPLORER,
   LOG_ACTIONS_CHANGE_EXPLORE_CONTROLS,
 } from '../../logger/LogUtils';
-import Hotkeys from '../../components/Hotkeys';
-
-// Prolly need to move this to a global context
-const keymap = {
-    RUN: 'ctrl + r, ctrl + enter',
-    SAVE: 'ctrl + s',
-};
-
-const getHotKeys = () => Object.keys(keymap).map(k => ({
-  name: k,
-  descr: keymap[k],
-  key: k,
-}));
+import EditableTitle from '../../components/EditableTitle';
+import FaveStar from '../../components/FaveStar';
+import TooltipWrapper from '../../components/TooltipWrapper';
 
 const propTypes = {
   actions: PropTypes.object.isRequired,
@@ -66,6 +56,10 @@ const propTypes = {
   standalone: PropTypes.bool.isRequired,
   timeout: PropTypes.number,
   impressionId: PropTypes.string,
+  can_overwrite: PropTypes.bool.isRequired,
+  can_download: PropTypes.bool.isRequired,
+  addHistory: PropTypes.func,
+  table_name: PropTypes.string
 };
 
 class ExploreViewContainer extends React.Component {
@@ -179,18 +173,18 @@ class ExploreViewContainer extends React.Component {
         this.onQuery();
       } else if (isS) {
         if (this.props.slice) {
-            this.props.actions.saveSlice(this.props.form_data, {
-              action: 'overwrite',
-              slice_id: this.props.slice.slice_id,
-              slice_name: this.props.slice.slice_name,
-              add_to_dash: 'noSave',
-              goto_dash: false,
-            }).then(({ data }) => {
-              window.location = data.slice.slice_url;
-            });
-          }
+          this.props.actions.saveSlice(this.props.form_data, {
+            action: 'overwrite',
+            slice_id: this.props.slice.slice_id,
+            slice_name: this.props.slice.slice_name,
+            add_to_dash: 'noSave',
+            goto_dash: false,
+          }).then(({ data }) => {
+            window.location = data.slice.slice_url;
+          });
         }
       }
+    }
   }
 
   findChangedControlKeys(prevControls, currentControls) {
@@ -291,6 +285,37 @@ class ExploreViewContainer extends React.Component {
     );
   }
 
+  renderChartTitle() {
+    let title;
+    if (this.props.slice) {
+      title = this.props.slice.slice_name;
+    } else {
+      title = t('%s - untitled', this.props.table_name);
+    }
+    return title;
+  }
+
+  updateChartTitleOrSaveSlice(newTitle) {
+    const isNewSlice = !this.props.slice;
+    const params = {
+      slice_name: newTitle,
+      action: isNewSlice ? 'saveas' : 'overwrite',
+    };
+    this.props.actions.saveSlice(this.props.form_data, params)
+      .then((json) => {
+        const { data } = json;
+        if (isNewSlice) {
+          this.props.actions.updateChartId(data.slice.slice_id, 0);
+          this.props.actions.createNewSlice(
+            data.can_add, data.can_download, data.can_overwrite,
+            data.slice, data.form_data);
+          this.addHistory({ isReplace: true, title: `[chart] ${data.slice.slice_name}` });
+        } else {
+          this.props.actions.updateChartTitle(newTitle);
+        }
+      });
+  }
+
   render() {
     if (this.props.standalone) {
       return this.renderChartContainer();
@@ -309,8 +334,38 @@ class ExploreViewContainer extends React.Component {
           />
         )}
         <div className="row">
-          <div className="col-sm-4">
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <div className="col-sm-12 explore-heading">
+            <div className="chart-title">
+              <EditableTitle
+                title={this.renderChartTitle()}
+                canEdit={!this.props.slice || this.props.can_overwrite}
+                onSaveTitle={this.updateChartTitleOrSaveSlice.bind(this)}
+              />
+
+              {this.props.slice &&
+                <span>
+                  <FaveStar
+                    itemId={this.props.slice.slice_id}
+                    fetchFaveStar={this.props.actions.fetchFaveStar}
+                    saveFaveStar={this.props.actions.saveFaveStar}
+                    isStarred={this.props.isStarred}
+                  />
+
+                  <TooltipWrapper
+                    label="edit-desc"
+                    tooltip={t('Edit chart properties')}
+                  >
+                    <a
+                      className="edit-desc-icon"
+                      href={`/chart/edit/${this.props.slice.slice_id}`}
+                    >
+                      <i className="fa fa-edit" />
+                    </a>
+                  </TooltipWrapper>
+                </span>
+              }
+            </div>
+            <div className="chart-action" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
               <QueryAndSaveBtns
                 canAdd="True"
                 onQuery={this.onQuery}
@@ -321,15 +376,9 @@ class ExploreViewContainer extends React.Component {
                 errorMessage={this.renderErrorMessage()}
                 datasourceType={this.props.datasource_type}
               />
-              <div className="m-l-5 text-muted">
-                <Hotkeys
-                  header="Keyboard shortcuts"
-                  hotkeys={getHotKeys()}
-                  placement="right"
-                />
-              </div>
             </div>
-            <br />
+          </div>
+          <div className="col-sm-4">
             <ControlPanelsContainer
               actions={this.props.actions}
               form_data={this.props.form_data}
