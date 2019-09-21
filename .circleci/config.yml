@@ -116,13 +116,9 @@ jobs:
         default: "dev"
         type: string
     steps:
-      - setup_docker
       - checkout
       - attach_workspace:
           at: /tmp/workspace
-      - add_ssh_keys:
-          fingerprints:
-            - "b8:c5:23:ed:2d:c1:38:0a:a4:3e:32:a7:db:b1:c8:c8"
       - run:
           name: Get deployer.proto file
           command: |
