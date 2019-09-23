@@ -164,6 +164,8 @@
 
   h6 {
     margin: 0;
+    font-size: 12px;
+    font-weight: 400;
   }
 
   li {
@@ -355,6 +357,12 @@
     min-width: 100px;
     left: -58px;
   }
+
+  .success {
+    a {
+      color: #333333;
+    }
+  }
 }
 
 .pagination-container {
@@ -383,6 +391,7 @@
     .btn {
       &:first-child {
         display: flex;
+        border-color: @body-bg;
       }
 
       .caret {
@@ -417,19 +426,6 @@
   }
 }
 
-.btn-default {
-  border: none;
-
-  &:hover, &:focus, &:active {
-    background-color: @brand-primary;
-    color: @body-bg;
-
-    .caret {
-      color: @body-bg;
-    }
-  }
-}
-
 .form-actions-container {
   padding: 0 !important;
 
@@ -443,6 +439,19 @@
         background-color: @brand-primary !important;
         color: @body-bg !important;
       }
+  
+      .caret {
+        color: @body-bg;
+      }
+    }
+  }
+
+  .btn-default {
+    border: none;
+  
+    &:hover, &:focus, &:active {
+      background-color: @brand-primary;
+      color: @body-bg;
   
       .caret {
         color: @body-bg;
@@ -519,6 +528,7 @@
 
         &:last-child {
           background-color: @brand-primary;
+          border-color: @brand-primary;
         }
 
         &:focus {
@@ -529,6 +539,7 @@
       .query {
         margin-right: 15px;
         background-color: @btn-run-query;
+        border-color: @btn-run-query;
       }
 
       .btn-warning {
@@ -539,5 +550,60 @@
         border-color: @btn-run-query;
       }
     }
+  }
+}
+
+.nav-tabs {
+  border-color: @border-nav;
+  li {
+    a {
+      &:hover {
+        border-color: @border-nav;
+        background-color: @border-nav;
+      }
+
+      &:focus {
+        border-color: @border-nav;
+        outline: none;
+      }
+    }
+
+    &.active {
+      a {
+        border-color: @border-nav;
+
+        &:hover {
+          border-color: @border-nav;
+        }
+
+        &:focus {
+          border-color: @border-nav;
+          outline: none;
+        }
+      }
+    }
+  }
+}
+
+input {
+  &.form-control {
+    background-color: @background-input;
+    box-shadow: none;
+    border-color: @background-input;
+
+    &:focus {
+      box-shadow: none;
+      border-color: @background-input;
+    }
+  }
+}
+
+.tab-pane {
+  border: @border-nav !important;
+}
+
+header {
+  &.top {
+    margin-bottom: 0 !important;
   }
 }

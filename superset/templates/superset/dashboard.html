@@ -19,5 +19,24 @@
 {% extends "superset/basic.html" %}
 
 {% block body %}
-  <div id="app" data-bootstrap="{{ bootstrap_data }}" />
+<div class="container-fluid">
+  <div class="row custom-layout">
+    <div class="menu-left">
+      <ul class="nav navbar-nav">
+        {% if WARNING_MSG %}
+        <li class="alert alert-danger">
+          {{ WARNING_MSG | safe }}
+        </li>
+        {% endif %}
+        {% include 'appbuilder/menu.html' %}
+      </ul>
+    </div>
+    <div class="boby-content">
+      <div id="app" data-bootstrap="{{ bootstrap_data }}">
+        <img src="/static/assets/images/loading.gif"
+          style="width: 50px; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%)">
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
