@@ -34,8 +34,8 @@ const propTypes = {
 };
 
 const defaultProps = {
-  onStop: () => {},
-  onSave: () => {},
+  onStop: () => { },
+  onSave: () => { },
   disabled: false,
 };
 
@@ -61,19 +61,19 @@ export default function QueryAndSaveBtns(
       <i className="fa fa-stop-circle-o" /> Stop
     </Button>
   ) : (
-    <Button
-      className="query"
-      onClick={onQuery}
-      bsStyle={qryButtonStyle}
-      disabled={!!errorMessage}
-    >
-      <i className="fa fa-bolt" /> Run Query
+      <Button
+        className="query"
+        onClick={onQuery}
+        bsStyle={qryButtonStyle}
+        disabled={!!errorMessage}
+      >
+        <i className="fa fa-bolt" /> Run Query
     </Button>
-  );
+    );
 
   return (
     <div>
-      <ButtonGroup className="query-and-save">
+      <div className="query-and-save">
         {qryOrStopButton}
         <Button
           className={saveClasses}
@@ -84,7 +84,7 @@ export default function QueryAndSaveBtns(
         >
           <i className="fa fa-plus-circle" /> Save
         </Button>
-      </ButtonGroup>
+      </div>
       {errorMessage &&
         <span>
           {' '}
