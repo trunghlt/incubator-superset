@@ -194,31 +194,42 @@
 {% endmacro %}
 
 
-{% macro render_field(field, begin_sep_label='', end_sep_label='', begin_sep_field='', end_sep_field='') %}
+{% macro render_field(field) %}
 {% if field.id != 'csrf_token' %}
-{% if field.type == 'HiddenField' %}
-{{ field}}
-{% else %}
-{{begin_sep_label|safe}}
-<label for="{{field.id}}" control-label>
-    {{ field.label.text }}
-    {% if field.flags.required %}
-    <strong style="color: red">&#42;</strong>
+    {% if field.type == 'HiddenField' %}
+        {{ field }}
+    {% else %}
+        {% if field.type == 'TextAreaField' %}
+            <div class="col-w-100">
+                <div class="col-md-1">
+        {% else %}
+            <div class="col-w-50">
+                <div class="col-md-2">
+        {% endif %}
+            <label for="{{field.id}}" control-label>
+                {{ field.label.text }}
+                {% if field.flags.required %}
+                <strong>&#42;</strong>
+                {% endif %}
+            </label>
+        </div>
+        {% if field.type == 'TextAreaField' %}
+            <div class="col-md-11">
+        {% else %}
+            <div class="col-md-10">
+        {% endif %}
+            {{ field(**kwargs)|safe }}
+            <span class="help-block">{{ field.description }}</span>
+            {% if field.errors %}
+            <div class="alert alert-danger">
+                {% for error in field.errors %}
+                {{ _(error) }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        </div>
     {% endif %}
-</label>
-{{end_sep_label|safe}}
-{{begin_sep_field|safe}}
-{{ field(**kwargs)|safe }}
-<span class="help-block">{{ field.description }}</span>
-{% endif %}
-{% if field.errors %}
-<div class="alert alert-danger">
-    {% for error in field.errors %}
-    {{ _(error) }}
-    {% endfor %}
-</div>
-{% endif %}
-{{end_sep_field|safe}}
 {% endif %}
 {% endmacro %}
 
@@ -268,10 +279,11 @@
     {% endmacro %}
 
     {% macro render_form_controls() %}
-    <div class="well well-sm">
-        <button type="submit" class="btn  btn-sm btn-primary">{{_("Save")}}
-            <i class="fa fa-save"></i></button>
-        {{ lnk_back() }}
+    <div class="row btn-action">
+        <div class="col-md-1"></div>
+        <div class="col-md-11"><button type="submit" class="btn btn-sm btn-primary">{{_("Save")}}</button>
+            {{ lnk_back() }}
+        </div>
     </div>
     {% endmacro %}
 
@@ -318,9 +330,8 @@
     {% endmacro %}
 
     {% macro lnk_back() %}
-    <a href="{{url_for('UtilView' + '.back')}}" class="btn btn-sm btn-default" data-toggle="tooltip" rel="tooltip"
-        title="{{_('Back')}}">
-        <i class="fa fa-arrow-left"></i>
+    <a href="{{url_for('UtilView' + '.back')}}" class="btn btn-sm btn-default">
+        Cancel
     </a>
     {% endmacro %}
 

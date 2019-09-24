@@ -53,6 +53,7 @@ RUN pip install --upgrade setuptools pip \
     && rm -rf /root/.cache/pip
 
 RUN git clone https://github.com/JohnOmernik/sqlalchemy-drill && cd sqlalchemy-drill && python3 setup.py install
+RUN rm -rf sqlalchemy-drill
 
 COPY --chown=superset:superset superset superset
 
